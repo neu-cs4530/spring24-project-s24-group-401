@@ -17,7 +17,7 @@ export type TownJoinResponse = {
   interactables: TypedInteractable[];
 }
 
-export type InteractableType = 'ConversationArea' | 'ViewingArea' | 'TicTacToeArea' | 'ConnectFourArea';
+export type InteractableType = 'ConversationArea' | 'ViewingArea' | 'TicTacToeArea' | 'ConnectFourArea' | 'HangmanArea';
 export interface Interactable {
   type: InteractableType;
   id: InteractableID;
@@ -120,6 +120,18 @@ export interface TicTacToeGameState extends WinnableGameState {
   o?: PlayerID;
 }
 
+export interface HangmanGameState extends WinnableGameState {
+  // word to be guessed
+  word: string;
+  guessedLetters: string[];
+  maxIncorrectGuesses: number;
+  incorrectGuesses: number;
+}
+
+export interface HangmanMove {
+  guessedLetter: HangmanLetter;
+}
+
 /**
  * Type for the state of a ConnectFour game.
  * The state of the game is represented as a list of moves, and the playerIDs of the players (red and yellow)
@@ -149,6 +161,12 @@ export interface ConnectFourMove {
   col: ConnectFourColIndex;
   row: ConnectFourRowIndex;
 }
+export type HangmanLetter = 
+'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 
+'H' | 'I' | 'J' | 'K' | 'L' | 'M' | 'N' | 
+'O' | 'P' | 'Q' | 'R' | 'S' | 'T' | 'U' | 
+'V' | 'W' | 'X' | 'Y' | 'Z';
+
 
 /**
  * Row indices in ConnectFour start at the top of the board and go down
@@ -216,7 +234,7 @@ interface InteractableCommandBase {
   type: string;
 }
 
-export type InteractableCommand =  ViewingAreaUpdateCommand | JoinGameCommand | GameMoveCommand<TicTacToeMove> | GameMoveCommand<ConnectFourMove> | StartGameCommand | LeaveGameCommand;
+export type InteractableCommand =  ViewingAreaUpdateCommand | JoinGameCommand | GameMoveCommand<TicTacToeMove> | GameMoveCommand<ConnectFourMove> | GameMoveCommand<HangmanMove> | StartGameCommand | LeaveGameCommand;
 export interface ViewingAreaUpdateCommand  {
   type: 'ViewingAreaUpdate';
   update: ViewingArea;
