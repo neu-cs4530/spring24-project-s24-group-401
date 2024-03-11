@@ -1,8 +1,7 @@
-import InvalidParametersError, { GAME_FULL_MESSAGE, PLAYER_ALREADY_IN_GAME_MESSAGE, PLAYER_NOT_IN_GAME_MESSAGE } from '../../lib/InvalidParametersError';
+import InvalidParametersError, { GAME_FULL_MESSAGE, LETTER_ALREADY_GUESSED_MESSAGE, PLAYER_ALREADY_IN_GAME_MESSAGE, PLAYER_NOT_IN_GAME_MESSAGE } from '../../lib/InvalidParametersError';
 import Player from '../../lib/Player';
 import { GameMove, HangmanGameState, HangmanMove } from '../../types/CoveyTownSocket';
 import Game from './Game';
-
 
 /**
  * A HangmanGame is a game that implements the rules of Hangman.
@@ -12,18 +11,24 @@ import Game from './Game';
 
 export default class HangmanGame extends Game<HangmanGameState, HangmanMove> {
     // a list of playerIDs of all Players currently in the game 
-    private allPlayers: Array<String>;
+    private allPlayers: Array<string>;
     private maxPlayersAllowed = 10;
-    public constructor(targetWord: String) {
+    private correctGuesses: Set<string>;
+    private targetWord: string;
+    private _board: string;
+
+    public constructor(targetWord: string) {
         // word to be guessed
         super({
             status: 'WAITING_TO_START',
             word: 'testWord',
             guessedLetters: [],
-            maxIncorrectGuesses: 6,
-            incorrectGuesses: 0,
+            incorrectGuessesLeft: 6,
         });
         this.allPlayers = [];
+        this.targetWord = targetWord;
+        this._board = this._initBoard(targetWord);
+        this.correctGuesses = new Set([...targetWord]); // Unique letters in the word
     }
 
     /**
@@ -49,7 +54,45 @@ export default class HangmanGame extends Game<HangmanGameState, HangmanMove> {
     }
 
     public applyMove(move: GameMove<HangmanMove>) {
-        throw new Error('Method not implemented.');
+        const GUESSEDLETTER = move.move.guessedLetter.toUpperCase();
+
+        // if letter already guessed
+        if (this.state.guessedLetters.includes(GUESSEDLETTER)) {
+            throw new InvalidParametersError(LETTER_ALREADY_GUESSED_MESSAGE);
+        }
+
+        this.state.guessedLetters.push(GUESSEDLETTER);
+
+        // if letter is in the word
+        if (this.targetWord.includes(GUESSEDLETTER)) {
+            this.correctGuesses.delete(GUESSEDLETTER);
+            if (this.correctGuesses.size === 0) {
+                // player has guessed all the letters
+                this.state.status = 'OVER';
+                this.state.winner = move.playerID;
+            }
+        } else {
+            // if letter is not in the word
+            this.state.incorrectGuessesLeft -= 1;
+            if (this.state.incorrectGuessesLeft === 0) {
+                // player has run out of guesses
+                this.state.status = 'OVER';
+                this.state.winner = undefined;
+            }
+        }
+        this._board = this._renderBoard();
+    }
+
+    private _renderBoard(): string {
+        let board = '';
+        for (let i = 0; i < this.targetWord.length; i++) {
+            if (this.state.guessedLetters.includes(this.targetWord[i])) {
+                board += this.targetWord[i];
+            } else {
+                board += '_';
+            }
+        }
+        return board;
     }
     
     private _removePlayer(player: Player) {
@@ -78,5 +121,12 @@ export default class HangmanGame extends Game<HangmanGameState, HangmanMove> {
             this.allPlayers.push(player.id);
             return;
         }
+    }
+    private _initBoard(targetWord: string): string {
+        let board = '';
+        for (let i = 0; i < targetWord.length; i++) {
+            board += '_';
+        }
+        return board;
     }
 }

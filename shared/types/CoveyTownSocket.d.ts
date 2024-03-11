@@ -124,8 +124,7 @@ export interface HangmanGameState extends WinnableGameState {
   // word to be guessed
   word: string;
   guessedLetters: string[];
-  maxIncorrectGuesses: number;
-  incorrectGuesses: number;
+  incorrectGuessesLeft: number;
 }
 
 export interface HangmanMove {
