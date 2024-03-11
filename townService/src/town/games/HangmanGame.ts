@@ -1,4 +1,4 @@
-import InvalidParametersError, { GAME_FULL_MESSAGE, LETTER_ALREADY_GUESSED_MESSAGE, PLAYER_ALREADY_IN_GAME_MESSAGE, PLAYER_NOT_IN_GAME_MESSAGE } from '../../lib/InvalidParametersError';
+import InvalidParametersError, { GAME_FULL_MESSAGE, GAME_NOT_IN_PROGRESS_MESSAGE, LETTER_ALREADY_GUESSED_MESSAGE, PLAYER_ALREADY_IN_GAME_MESSAGE, PLAYER_NOT_IN_GAME_MESSAGE } from '../../lib/InvalidParametersError';
 import Player from '../../lib/Player';
 import { GameMove, HangmanGameState, HangmanMove } from '../../types/CoveyTownSocket';
 import Game from './Game';
@@ -7,7 +7,6 @@ import Game from './Game';
  * A HangmanGame is a game that implements the rules of Hangman.
  * @see https://en.wikipedia.org/wiki/Hangman_(game)
  */
-
 
 export default class HangmanGame extends Game<HangmanGameState, HangmanMove> {
     // a list of playerIDs of all Players currently in the game 
@@ -53,7 +52,34 @@ export default class HangmanGame extends Game<HangmanGameState, HangmanMove> {
         }
     }
 
+
+    /**
+     * Applies a move to the game.
+     *
+     * Validates the move, and if it is valid, applies it to the game state.
+     *
+     * If the move ends the game, updates the game state to reflect the end of the game,
+     * setting the status to "OVER" and the winner to the player who won (or "undefined" if player lost)
+     *
+     * @param move The move to attempt to apply
+     *
+     * @throws InvalidParametersError if the game is not in progress (GAME_NOT_IN_PROGRESS_MESSAGE)
+     * @throws InvalidParametersError if the player is not in the game (PLAYER_NOT_IN_GAME_MESSAGE)
+     * @throws InvalidParametersError if the move is not the player's turn (MOVE_NOT_YOUR_TURN_MESSAGE)
+     *
+     */
+
+    // NEED TO CHANGER ABOVE COMMENT 
+    // STILL NEED TO IMPLEMENT TURNS
     public applyMove(move: GameMove<HangmanMove>) {
+
+        if (this.state.status !== 'IN_PROGRESS') {
+            throw new InvalidParametersError(GAME_NOT_IN_PROGRESS_MESSAGE);
+        }
+        if (this.allPlayers.indexOf(move.playerID) === -1) {
+            throw new InvalidParametersError(PLAYER_NOT_IN_GAME_MESSAGE);
+        }
+        
         const GUESSEDLETTER = move.move.guessedLetter.toUpperCase();
 
         // if letter already guessed
