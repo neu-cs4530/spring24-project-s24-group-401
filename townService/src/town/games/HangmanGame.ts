@@ -1,4 +1,4 @@
-import InvalidParametersError, { GAME_FULL_MESSAGE, PLAYER_ALREADY_IN_GAME_MESSAGE } from '../../lib/InvalidParametersError';
+import InvalidParametersError, { GAME_FULL_MESSAGE, PLAYER_ALREADY_IN_GAME_MESSAGE, PLAYER_NOT_IN_GAME_MESSAGE } from '../../lib/InvalidParametersError';
 import Player from '../../lib/Player';
 import { GameMove, HangmanGameState, HangmanMove } from '../../types/CoveyTownSocket';
 import Game from './Game';
@@ -25,14 +25,39 @@ export default class HangmanGame extends Game<HangmanGameState, HangmanMove> {
         });
         this.allPlayers = [];
     }
+
+    /**
+     * Removes a player from the game.
+     * Updates the game's state to reflect the player leaving.
+     *
+     * If the game state is currently "IN_PROGRESS" and there is only player, updates winner to undefined
+     *
+     * @param player The player to remove from the game
+     * @throws InvalidParametersError if the player is not in the game (PLAYER_NOT_IN_GAME_MESSAGE)
+     */
     protected _leave(player: Player): void {
-        throw new Error('Method not implemented.');
+        if (this.allPlayers.indexOf(player.id) === -1) {
+            throw new InvalidParametersError(PLAYER_NOT_IN_GAME_MESSAGE);
+        }
+        if (this.state.status === 'IN_PROGRESS' && this.allPlayers.length === 1) {
+            this._removePlayer(player);
+            this.state.status = 'OVER';
+            this.state.winner = undefined;
+        } else {
+            this._removePlayer(player);
+        }
     }
 
     public applyMove(move: GameMove<HangmanMove>) {
         throw new Error('Method not implemented.');
     }
     
+    private _removePlayer(player: Player) {
+        const index = this.allPlayers.indexOf(player.id);
+        if (index > -1) {
+            this.allPlayers.splice(index, 1);
+        }
+    }
 
     /**
      * Joins a player to the game.
