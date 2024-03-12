@@ -1,4 +1,4 @@
-import InvalidParametersError, { GAME_FULL_MESSAGE, GAME_NOT_IN_PROGRESS_MESSAGE, LETTER_ALREADY_GUESSED_MESSAGE, PLAYER_ALREADY_IN_GAME_MESSAGE, PLAYER_NOT_IN_GAME_MESSAGE } from '../../lib/InvalidParametersError';
+import InvalidParametersError, { GAME_FULL_MESSAGE, GAME_NOT_IN_PROGRESS_MESSAGE, GAME_NOT_STARTABLE_MESSAGE, LETTER_ALREADY_GUESSED_MESSAGE, PLAYER_ALREADY_IN_GAME_MESSAGE, PLAYER_NOT_IN_GAME_MESSAGE } from '../../lib/InvalidParametersError';
 import Player from '../../lib/Player';
 import { GameMove, HangmanGameState, HangmanMove } from '../../types/CoveyTownSocket';
 import Game from './Game';
@@ -10,7 +10,6 @@ import Game from './Game';
 
 export default class HangmanGame extends Game<HangmanGameState, HangmanMove> {
     // a list of playerIDs of all Players currently in the game 
-    private allPlayers: Array<string>;
     private maxPlayersAllowed = 10;
     private correctGuesses: Set<string>;
     private targetWord: string;
@@ -23,8 +22,8 @@ export default class HangmanGame extends Game<HangmanGameState, HangmanMove> {
             word: 'testWord',
             guessedLetters: [],
             incorrectGuessesLeft: 6,
+            allPlayers: [],
         });
-        this.allPlayers = [];
         this.targetWord = targetWord;
         this._board = this._initBoard(targetWord);
         this.correctGuesses = new Set([...targetWord]); // Unique letters in the word
@@ -40,10 +39,10 @@ export default class HangmanGame extends Game<HangmanGameState, HangmanMove> {
      * @throws InvalidParametersError if the player is not in the game (PLAYER_NOT_IN_GAME_MESSAGE)
      */
     protected _leave(player: Player): void {
-        if (this.allPlayers.indexOf(player.id) === -1) {
+        if (this.state.allPlayers.indexOf(player.id) === -1) {
             throw new InvalidParametersError(PLAYER_NOT_IN_GAME_MESSAGE);
         }
-        if (this.state.status === 'IN_PROGRESS' && this.allPlayers.length === 1) {
+        if (this.state.status === 'IN_PROGRESS' && this.state.allPlayers.length === 1) {
             this._removePlayer(player);
             this.state.status = 'OVER';
             this.state.winner = undefined;
@@ -52,6 +51,28 @@ export default class HangmanGame extends Game<HangmanGameState, HangmanMove> {
         }
     }
 
+    /**
+     * Indicates that a player is ready to start the game.
+     *
+     * Updates the game state to indicate that the game is starting
+     *
+     * @throws InvalidParametersError if the player is not in the game (PLAYER_NOT_IN_GAME_MESSAGE)
+     * @throws InvalidParametersError if the game is not in the WAITING_TO_START state (GAME_NOT_STARTABLE_MESSAGE)
+     *
+     * @param player The player who is ready to start the game
+     */
+    public startGame(player: Player): void {
+        if (this.state.status !== 'WAITING_TO_START') {
+        throw new InvalidParametersError(GAME_NOT_STARTABLE_MESSAGE);
+        }
+        if (this.state.allPlayers.indexOf(player.id) === -1) {
+        throw new InvalidParametersError(PLAYER_NOT_IN_GAME_MESSAGE);
+        }
+        this.state = {
+        ...this.state,
+        status: 'IN_PROGRESS'
+        };
+    }
 
     /**
      * Applies a move to the game.
@@ -76,7 +97,7 @@ export default class HangmanGame extends Game<HangmanGameState, HangmanMove> {
         if (this.state.status !== 'IN_PROGRESS') {
             throw new InvalidParametersError(GAME_NOT_IN_PROGRESS_MESSAGE);
         }
-        if (this.allPlayers.indexOf(move.playerID) === -1) {
+        if (this.state.allPlayers.indexOf(move.playerID) === -1) {
             throw new InvalidParametersError(PLAYER_NOT_IN_GAME_MESSAGE);
         }
         
@@ -122,9 +143,9 @@ export default class HangmanGame extends Game<HangmanGameState, HangmanMove> {
     }
     
     private _removePlayer(player: Player) {
-        const index = this.allPlayers.indexOf(player.id);
+        const index = this.state.allPlayers.indexOf(player.id);
         if (index > -1) {
-            this.allPlayers.splice(index, 1);
+            this.state.allPlayers.splice(index, 1);
         }
     }
 
@@ -137,14 +158,14 @@ export default class HangmanGame extends Game<HangmanGameState, HangmanMove> {
      * @param player the player to join the game
      */
     protected _join(player: Player) {
-        if (this.allPlayers.length === this.maxPlayersAllowed) {
+        if (this.state.allPlayers.length === this.maxPlayersAllowed) {
             throw new InvalidParametersError(GAME_FULL_MESSAGE);
         }
-        if (this.allPlayers.includes(player.id)) {
+        if (this.state.allPlayers.includes(player.id)) {
             throw new InvalidParametersError(PLAYER_ALREADY_IN_GAME_MESSAGE);
         }
-        if (this.allPlayers.length === 0) {
-            this.allPlayers.push(player.id);
+        if (this.state.allPlayers.length === 0) {
+            this.state.allPlayers.push(player.id);
             return;
         }
     }
