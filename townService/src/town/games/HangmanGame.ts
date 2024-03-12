@@ -100,7 +100,7 @@ export default class HangmanGame extends Game<HangmanGameState, HangmanMove> {
     if (this.state.allPlayers.indexOf(move.playerID) === -1) {
       throw new InvalidParametersError(PLAYER_NOT_IN_GAME_MESSAGE);
     }   
-    const GUESSEDLETTER = move.move.guessedLetter.toUpperCase();
+    const GUESSEDLETTER = move.move.gamePiece.toUpperCase();
 
     // if letter already guessed
     if (this.state.guessedLetters.includes(GUESSEDLETTER)) {
