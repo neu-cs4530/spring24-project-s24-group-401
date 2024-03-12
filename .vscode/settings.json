@@ -11,5 +11,8 @@
   "eslint.workingDirectories": [
     "./frontend",
     "./townService",
-  ]
+  ],
+  "editor.tabSize": 2,
+  "editor.detectIndentation": false,
+  "editor.indentSize": "tabSize"
 }
