@@ -125,12 +125,12 @@ export interface HangmanGameState extends WinnableGameState {
   word: string;
   guessedLetters: string[];
   incorrectGuessesLeft: number;
-  allPlayers: Array<string>;
+  allPlayers: Array<PlayerID>;
 
 }
 
 export interface HangmanMove {
-  guessedLetter: HangmanLetter;
+  gamePiece: HangmanLetter;
 }
 
 /**
