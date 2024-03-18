@@ -209,7 +209,7 @@ describe('[T5.2] InteractableAreasList', () => {
     conversationAreas = [];
     viewingAreas = [];
     const interactableTypes = ['conversation', 'game', 'viewing'];
-    let allPlayers: PlayerController[] = [];
+    let gamePlayersById: PlayerController[] = [];
     for (const interactableType of interactableTypes) {
       for (let areaID = 0; areaID < numAreas; areaID += 1) {
         const playersInThisArea: PlayerController[] = [];
@@ -229,7 +229,7 @@ describe('[T5.2] InteractableAreasList', () => {
             ),
           );
         }
-        allPlayers = allPlayers.concat(playersInThisArea);
+        gamePlayersById = gamePlayersById.concat(playersInThisArea);
         if (interactableType === 'conversation') {
           const area = createConversationForTesting({
             label: `conversation area label for id ${areaID}`,
