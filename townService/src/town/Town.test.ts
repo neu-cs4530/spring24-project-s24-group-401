@@ -777,9 +777,9 @@ describe('Town', () => {
     });
   });
 
-  describe('disconnectAllPlayers', () => {
+  describe('disconnectgamePlayersById', () => {
     beforeEach(() => {
-      town.disconnectAllPlayers();
+      town.disconnectgamePlayersById();
     });
     it('Should emit the townClosing event', () => {
       getLastEmittedEvent(townEmitter, 'townClosing'); // Throws an error if no event existed

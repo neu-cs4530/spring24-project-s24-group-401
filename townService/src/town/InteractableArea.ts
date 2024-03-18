@@ -106,10 +106,10 @@ export default abstract class InteractableArea {
   /**
    * Given a list of players, adds all of the players that are within this interactable area
    *
-   * @param allPlayers list of players to examine and potentially add to this interactable area
+   * @param gamePlayersById list of players to examine and potentially add to this interactable area
    */
-  public addPlayersWithinBounds(allPlayers: Player[]) {
-    allPlayers
+  public addPlayersWithinBounds(gamePlayersById: Player[]) {
+    gamePlayersById
       .filter(eachPlayer => this.contains(eachPlayer.location))
       .forEach(eachContainedPlayer => this.add(eachContainedPlayer));
   }

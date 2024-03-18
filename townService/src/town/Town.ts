@@ -378,7 +378,7 @@ export default class Town {
    * Informs all players' clients that they are about to be disconnected, and then
    * disconnects all players.
    */
-  public disconnectAllPlayers(): void {
+  public disconnectgamePlayersById(): void {
     this._broadcastEmitter.emit('townClosing');
     this._connectedSockets.forEach(eachSocket => eachSocket.disconnect(true));
   }

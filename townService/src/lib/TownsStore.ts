@@ -138,7 +138,7 @@ export default class TownsStore {
     const existingTown = this.getTownByID(townID);
     if (existingTown && passwordMatches(townUpdatePassword, existingTown.townUpdatePassword)) {
       this._towns = this._towns.filter(town => town !== existingTown);
-      existingTown.disconnectAllPlayers();
+      existingTown.disconnectgamePlayersById();
       return true;
     }
     return false;

@@ -1,4 +1,4 @@
-import InvalidParametersError, { GAME_FULL_MESSAGE, GAME_NOT_IN_PROGRESS_MESSAGE, GAME_NOT_STARTABLE_MESSAGE, LETTER_ALREADY_GUESSED_MESSAGE, PLAYER_ALREADY_IN_GAME_MESSAGE, PLAYER_NOT_IN_GAME_MESSAGE } from '../../lib/InvalidParametersError';
+import InvalidParametersError, { MOVE_NOT_YOUR_TURN_MESSAGE, GAME_FULL_MESSAGE, GAME_NOT_IN_PROGRESS_MESSAGE, GAME_NOT_STARTABLE_MESSAGE, LETTER_ALREADY_GUESSED_MESSAGE, PLAYER_ALREADY_IN_GAME_MESSAGE, PLAYER_NOT_IN_GAME_MESSAGE } from '../../lib/InvalidParametersError';
 import Player from '../../lib/Player';
 import { GameMove, HangmanGameState, HangmanMove } from '../../types/CoveyTownSocket';
 import Game from './Game';
@@ -22,7 +22,7 @@ export default class HangmanGame extends Game<HangmanGameState, HangmanMove> {
       word: 'testWord',
       guessedLetters: [],
       incorrectGuessesLeft: 6,
-      allPlayers: [],
+      gamePlayersById: [],
     });
     this.targetWord = targetWord;
     this._board = this._initBoard(targetWord);
@@ -39,10 +39,10 @@ export default class HangmanGame extends Game<HangmanGameState, HangmanMove> {
    * @throws InvalidParametersError if the player is not in the game (PLAYER_NOT_IN_GAME_MESSAGE)
    */
   protected _leave(player: Player): void {
-    if (this.state.allPlayers.indexOf(player.id) === -1) {
+    if (this.state.gamePlayersById.indexOf(player.id) === -1) {
       throw new InvalidParametersError(PLAYER_NOT_IN_GAME_MESSAGE);
     }
-    if (this.state.status === 'IN_PROGRESS' && this.state.allPlayers.length === 1) {
+    if (this.state.status === 'IN_PROGRESS' && this.state.gamePlayersById.length === 1) {
       this._removePlayer(player);
       this.state.status = 'OVER';
       this.state.winner = undefined;
@@ -63,10 +63,10 @@ export default class HangmanGame extends Game<HangmanGameState, HangmanMove> {
    */
   public startGame(player: Player): void {
     if (this.state.status !== 'WAITING_TO_START') {
-    throw new InvalidParametersError(GAME_NOT_STARTABLE_MESSAGE);
+      throw new InvalidParametersError(GAME_NOT_STARTABLE_MESSAGE);
     }
-    if (this.state.allPlayers.indexOf(player.id) === -1) {
-    throw new InvalidParametersError(PLAYER_NOT_IN_GAME_MESSAGE);
+    if (this.state.gamePlayersById.indexOf(player.id) === -1) {
+      throw new InvalidParametersError(PLAYER_NOT_IN_GAME_MESSAGE);
     }
     this.state = {
     ...this.state,
@@ -92,14 +92,17 @@ export default class HangmanGame extends Game<HangmanGameState, HangmanMove> {
 
   // STILL NEED TO IMPLEMENT TURNS
   public applyMove(move: GameMove<HangmanMove>) {
-      // have a check here to see if it's the players turn
-
     if (this.state.status !== 'IN_PROGRESS') {
       throw new InvalidParametersError(GAME_NOT_IN_PROGRESS_MESSAGE);
     }
-    if (this.state.allPlayers.indexOf(move.playerID) === -1) {
+    if (this.state.gamePlayersById.indexOf(move.playerID) === -1) {
       throw new InvalidParametersError(PLAYER_NOT_IN_GAME_MESSAGE);
-    }   
+    }
+    // check here to see if it's the players turn
+    let currentGuesserIndex = this.state.guessedLetters.length % this.state.gamePlayersById.length 
+    if (this.state.gamePlayersById[currentGuesserIndex] !== move.playerID) {
+      throw new InvalidParametersError(MOVE_NOT_YOUR_TURN_MESSAGE);
+    }
     const GUESSEDLETTER = move.move.gamePiece.toUpperCase();
 
     // if letter already guessed
@@ -141,9 +144,9 @@ export default class HangmanGame extends Game<HangmanGameState, HangmanMove> {
   }
   
   private _removePlayer(player: Player) {
-    const index = this.state.allPlayers.indexOf(player.id);
+    const index = this.state.gamePlayersById.indexOf(player.id);
     if (index > -1) {
-      this.state.allPlayers.splice(index, 1);
+      this.state.gamePlayersById.splice(index, 1);
     }
   }
 
@@ -156,14 +159,14 @@ export default class HangmanGame extends Game<HangmanGameState, HangmanMove> {
    * @param player the player to join the game
    */
   protected _join(player: Player) {
-    if (this.state.allPlayers.length === this.maxPlayersAllowed) {
+    if (this.state.gamePlayersById.length === this.maxPlayersAllowed) {
       throw new InvalidParametersError(GAME_FULL_MESSAGE);
     }
-    if (this.state.allPlayers.includes(player.id)) {
+    if (this.state.gamePlayersById.includes(player.id)) {
       throw new InvalidParametersError(PLAYER_ALREADY_IN_GAME_MESSAGE);
     }
-    if (this.state.allPlayers.length === 0) {
-      this.state.allPlayers.push(player.id);
+    if (this.state.gamePlayersById.length === 0) {
+      this.state.gamePlayersById.push(player.id);
       return;
     }
   }

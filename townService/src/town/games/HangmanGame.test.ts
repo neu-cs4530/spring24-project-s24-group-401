@@ -41,8 +41,8 @@ describe('HangmanGame', () => {
       it('makes the first player X and initializes the state with status WAITING_TO_START', () => {
         const player = createPlayerForTesting();
         game.join(player);
-        expect(game.state.allPlayers[0]).toEqual(player.id);
-        expect(game.state.allPlayers[1]).toBeUndefined();
+        expect(game.state.gamePlayersById[0]).toEqual(player.id);
+        expect(game.state.gamePlayersById[1]).toBeUndefined();
         expect(game.state.word).toHaveLength(0);
         expect(game.state.status).toEqual('WAITING_TO_START');
         expect(game.state.winner).toBeUndefined();
@@ -55,8 +55,8 @@ describe('HangmanGame', () => {
           game.join(player2);
         });
         it('makes the second player O', () => {
-          expect(game.state.allPlayers[0]).toEqual(player1.id);
-          expect(game.state.allPlayers[1]).toEqual(player2.id);
+          expect(game.state.gamePlayersById[0]).toEqual(player1.id);
+          expect(game.state.gamePlayersById[1]).toEqual(player2.id);
         });
         it('sets the game status to IN_PROGRESS', () => {
           expect(game.state.status).toEqual('IN_PROGRESS');
@@ -82,8 +82,8 @@ describe('HangmanGame', () => {
           const player2 = createPlayerForTesting();
           game.join(player1);
           game.join(player2);
-          expect(game.state.allPlayers[0]).toEqual(player1.id);
-          expect(game.state.allPlayers[1]).toEqual(player2.id);
+          expect(game.state.gamePlayersById[0]).toEqual(player1.id);
+          expect(game.state.gamePlayersById[1]).toEqual(player2.id);
 
           game.leave(player1);
 
@@ -91,16 +91,16 @@ describe('HangmanGame', () => {
           expect(game.state.winner).toEqual(player2.id);
           expect(game.state.word).toHaveLength(0);
 
-          expect(game.state.allPlayers[0]).toEqual(player1.id);
-          expect(game.state.allPlayers[1]).toEqual(player2.id);
+          expect(game.state.gamePlayersById[0]).toEqual(player1.id);
+          expect(game.state.gamePlayersById[1]).toEqual(player2.id);
         });
         test('when o leaves', () => {
           const player1 = createPlayerForTesting();
           const player2 = createPlayerForTesting();
           game.join(player1);
           game.join(player2);
-          expect(game.state.allPlayers[0]).toEqual(player1.id);
-          expect(game.state.allPlayers[1]).toEqual(player2.id);
+          expect(game.state.gamePlayersById[0]).toEqual(player1.id);
+          expect(game.state.gamePlayersById[1]).toEqual(player2.id);
 
           game.leave(player2);
 
@@ -108,20 +108,20 @@ describe('HangmanGame', () => {
           expect(game.state.winner).toEqual(player1.id);
           expect(game.state.word).toHaveLength(0);
 
-          expect(game.state.allPlayers[0]).toEqual(player1.id);
-          expect(game.state.allPlayers[1]).toEqual(player2.id);
+          expect(game.state.gamePlayersById[0]).toEqual(player1.id);
+          expect(game.state.gamePlayersById[1]).toEqual(player2.id);
         });
       });
       it('when the game is not in progress, it should set the game status to WAITING_TO_START and remove the player', () => {
         const player1 = createPlayerForTesting();
         game.join(player1);
-        expect(game.state.allPlayers[0]).toEqual(player1.id);
-        expect(game.state.allPlayers[1]).toBeUndefined();
+        expect(game.state.gamePlayersById[0]).toEqual(player1.id);
+        expect(game.state.gamePlayersById[1]).toBeUndefined();
         expect(game.state.status).toEqual('WAITING_TO_START');
         expect(game.state.winner).toBeUndefined();
         game.leave(player1);
-        expect(game.state.allPlayers[0]).toBeUndefined();
-        expect(game.state.allPlayers[1]).toBeUndefined();
+        expect(game.state.gamePlayersById[0]).toBeUndefined();
+        expect(game.state.gamePlayersById[1]).toBeUndefined();
         expect(game.state.status).toEqual('WAITING_TO_START');
         expect(game.state.winner).toBeUndefined();
       });
