@@ -9,10 +9,10 @@ import Game from './Game';
  */
 
 export default class HangmanGame extends Game<HangmanGameState, HangmanMove> {
-  // a list of playerIDs of all Players currently in the game 
-  private maxPlayersAllowed = 10;
-  private correctGuesses: Set<string>;
-  private targetWord: string;
+  // a list of playerIDs of all Players currently in the game
+  private _maxPlayersAllowed = 10;
+  private _correctGuesses: Set<string>;
+  private _targetWord: string;
   private _board: string;
 
   public constructor(targetWord: string) {
@@ -24,9 +24,9 @@ export default class HangmanGame extends Game<HangmanGameState, HangmanMove> {
       incorrectGuessesLeft: 6,
       gamePlayersById: [],
     });
-    this.targetWord = targetWord;
+    this._targetWord = targetWord;
     this._board = this._initBoard(targetWord);
-    this.correctGuesses = new Set([...targetWord]); // Unique letters in the word
+    this._correctGuesses = new Set([...targetWord]); // Unique letters in the word
   }
 
   /**
@@ -69,8 +69,8 @@ export default class HangmanGame extends Game<HangmanGameState, HangmanMove> {
       throw new InvalidParametersError(PLAYER_NOT_IN_GAME_MESSAGE);
     }
     this.state = {
-    ...this.state,
-    status: 'IN_PROGRESS'
+      ...this.state,
+      status: 'IN_PROGRESS'
     };
   }
 
@@ -99,22 +99,22 @@ export default class HangmanGame extends Game<HangmanGameState, HangmanMove> {
       throw new InvalidParametersError(PLAYER_NOT_IN_GAME_MESSAGE);
     }
     // check here to see if it's the players turn
-    let currentGuesserIndex = this.state.guessedLetters.length % this.state.gamePlayersById.length 
+    const currentGuesserIndex = this.state.guessedLetters.length % this.state.gamePlayersById.length;
     if (this.state.gamePlayersById[currentGuesserIndex] !== move.playerID) {
       throw new InvalidParametersError(MOVE_NOT_YOUR_TURN_MESSAGE);
     }
-    const GUESSEDLETTER = move.move.gamePiece.toUpperCase();
+    const guessedLetter = move.move.gamePiece.toUpperCase();
 
     // if letter already guessed
-    if (this.state.guessedLetters.includes(GUESSEDLETTER)) {
+    if (this.state.guessedLetters.includes(guessedLetter)) {
       throw new InvalidParametersError(LETTER_ALREADY_GUESSED_MESSAGE);
     }
-    this.state.guessedLetters.push(GUESSEDLETTER);
+    this.state.guessedLetters.push(guessedLetter);
 
     // if letter is in the word
-    if (this.targetWord.includes(GUESSEDLETTER)) {
-      this.correctGuesses.delete(GUESSEDLETTER);
-      if (this.correctGuesses.size === 0) {
+    if (this._targetWord.includes(guessedLetter)) {
+      this._correctGuesses.delete(guessedLetter);
+      if (this._correctGuesses.size === 0) {
         // player has guessed all the letters
         this.state.status = 'OVER';
         this.state.winner = move.playerID;
@@ -123,9 +123,9 @@ export default class HangmanGame extends Game<HangmanGameState, HangmanMove> {
       // if letter is not in the word
       this.state.incorrectGuessesLeft -= 1;
       if (this.state.incorrectGuessesLeft === 0) {
-          // player has run out of guesses
-          this.state.status = 'OVER';
-          this.state.winner = undefined;
+        // player has run out of guesses
+        this.state.status = 'OVER';
+        this.state.winner = undefined;
       }
     }
     this._board = this._renderBoard();
@@ -133,16 +133,15 @@ export default class HangmanGame extends Game<HangmanGameState, HangmanMove> {
 
   private _renderBoard(): string {
     let board = '';
-    for (let i = 0; i < this.targetWord.length; i++) {
-      if (this.state.guessedLetters.includes(this.targetWord[i])) {
-          board += this.targetWord[i];
+    for (let i = 0; i < this._targetWord.length; i++) {
+      if (this.state.guessedLetters.includes(this._targetWord[i])) {
+        board += this._targetWord[i];
       } else {
-          board += '_';
+        board += '_';
       }
     }
     return board;
   }
-  
   private _removePlayer(player: Player) {
     const index = this.state.gamePlayersById.indexOf(player.id);
     if (index > -1) {
@@ -159,7 +158,7 @@ export default class HangmanGame extends Game<HangmanGameState, HangmanMove> {
    * @param player the player to join the game
    */
   protected _join(player: Player) {
-    if (this.state.gamePlayersById.length === this.maxPlayersAllowed) {
+    if (this.state.gamePlayersById.length === this._maxPlayersAllowed) {
       throw new InvalidParametersError(GAME_FULL_MESSAGE);
     }
     if (this.state.gamePlayersById.includes(player.id)) {
@@ -167,13 +166,13 @@ export default class HangmanGame extends Game<HangmanGameState, HangmanMove> {
     }
     if (this.state.gamePlayersById.length === 0) {
       this.state.gamePlayersById.push(player.id);
-      return;
     }
   }
+
   private _initBoard(targetWord: string): string {
     let board = '';
     for (let i = 0; i < targetWord.length; i++) {
-        board += '_';
+      board += '_';
     }
     return board;
   }

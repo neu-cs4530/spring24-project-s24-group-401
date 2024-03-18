@@ -1,11 +1,13 @@
 import InvalidParametersError, { GAME_ID_MISSMATCH_MESSAGE, GAME_NOT_IN_PROGRESS_MESSAGE, INVALID_COMMAND_MESSAGE } from "../../lib/InvalidParametersError";
-import { HangmanMove, InteractableCommand, InteractableCommandReturnType, InteractableType } from "../../types/CoveyTownSocket";
+import { HangmanLetter, HangmanMove, InteractableCommand, InteractableCommandReturnType, InteractableType } from "../../types/CoveyTownSocket";
 import GameArea from "./GameArea";
 import Player from '../../lib/Player';
 import HangmanGame from "./HangmanGame";
+import { CommandList } from "twilio/lib/rest/preview/wireless/command";
 
 export default class HangmanGameArea extends GameArea<HangmanGame> {
-  letters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
+  // letters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
+  
   protected getType(): InteractableType {
     return 'HangmanArea';
   }
@@ -16,9 +18,9 @@ export default class HangmanGameArea extends GameArea<HangmanGame> {
   ): InteractableCommandReturnType<CommandType> {
     switch (command.type) {
       case 'JoinGame': {
-        let game = this.game;
+        let { game } = this;
         if (!game || game.state.status === 'OVER') {
-          game = new HangmanGame('testword'); //TODO: Implement word generation
+          game = new HangmanGame('testword'); // TODO: Implement word generation
           this._game = game;
         }
         this._game?.join(player);
@@ -33,9 +35,11 @@ export default class HangmanGameArea extends GameArea<HangmanGame> {
       }
       case 'GameMove': {
         this._validateGameId(command.gameID);
-        if (!this.letters.includes(command.move.gamePiece)) {
+        
+        /* if (!this.letters.includes(command.move.gamePiece)) {
           throw new InvalidParametersError('Invalid game piece');
-        }
+        } */
+
         this.game?.applyMove({
           gameID: command.gameID,
           playerID: player.id,
@@ -61,8 +65,8 @@ export default class HangmanGameArea extends GameArea<HangmanGame> {
   private _checkGameEnded() {
     if (this.game !== undefined && this.game?.state.status === 'OVER') {
       const losingPlayerID = this.game.state.gamePlayersById.find(player => player !== this.game?.state.winner)!;
-      //TODO: Handle multiple losers
-      const losingPlayer = this.occupants.find(player => player.id === losingPlayerID )!;
+      // TODO: Handle multiple losers
+      const losingPlayer = this.occupants.find(player => player.id === losingPlayerID)!;
       const winningPlayer = this.occupants.find(player => player.id === this.game?.state.winner)!;
       this._history.push({
         gameID: this.game.id,
