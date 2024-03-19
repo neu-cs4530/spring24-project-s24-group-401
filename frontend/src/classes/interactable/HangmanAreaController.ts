@@ -1,9 +1,6 @@
 import GameAreaController, { GameEventTypes } from './GameAreaController';
 import PlayerController from '../PlayerController';
-import { GameArea, GameStatus } from '../../types/CoveyTownSocket';
-
-
-// need to fix imports
+import { GameArea, GameStatus, HangmanMove } from '../../types/CoveyTownSocket';
 
 export type HangmanGameState = {
   word: string;
@@ -87,7 +84,7 @@ export default class HangmanAreaController extends GameAreaController<
     await this._townController.sendInteractableCommand(this.id, {
       type: 'GameMove',
       gameID: instanceID,
-      move: { letter }, // name for letter move?
+      move: { letter } as unknown as HangmanMove,
     });
   }
 }
