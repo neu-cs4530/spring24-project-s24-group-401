@@ -1,6 +1,6 @@
-import GameAreaController from './GameAreaController';
+import GameAreaController, { GameEventTypes } from './GameAreaController';
 import PlayerController from '../PlayerController';
-import { GameArea, GameStatus, GameEventTypes } from '../../types/CoveyTownSocket';
+import { GameArea, GameStatus } from '../../types/CoveyTownSocket';
 
 
 // need to fix imports
@@ -28,6 +28,9 @@ export default class HangmanAreaController extends GameAreaController<
   HangmanGameState,
   HangmanEvents
 > {
+  public isActive(): boolean {
+    throw new Error('Method not implemented.');
+  }
   protected _gameState: HangmanGameState = {
     word: '',
     guessedLetters: [],
