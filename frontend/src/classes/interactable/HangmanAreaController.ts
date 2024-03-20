@@ -37,26 +37,44 @@ export default class HangmanAreaController extends GameAreaController<
     winner: undefined,
   };
 
+  /**
+   * Returns the word that players are trying to guess.
+   */
   get word(): string {
     return this._gameState.word;
   }
 
+  /**
+   * Returns an array of letters that players have guessed.
+   */
   get guessedLetters(): string[] {
     return this._gameState.guessedLetters;
   }
 
+  /**
+   * Returns the number of incorrect guesses left for the players.
+   */
   get incorrectGuessesLeft(): number {
     return this._gameState.incorrectGuessesLeft;
   }
 
+  /**
+   * Returns an array of player IDs who are participating in the game.
+   */
   get gamePlayersById(): string[] {
     return this._gameState.gamePlayersById;
   }
 
+  /**
+   * Returns the current status of the game.
+   */
   get status(): GameStatus {
     return this._gameState.status;
   }
 
+  /**
+   * Returns the winner of the game, if there is one.
+   */
   get winner(): string | undefined {
     return this._gameState.winner;
   }
@@ -84,7 +102,7 @@ export default class HangmanAreaController extends GameAreaController<
     await this._townController.sendInteractableCommand(this.id, {
       type: 'GameMove',
       gameID: instanceID,
-      move: { letter } as unknown as HangmanMove,
+      move: {} as HangmanMove,
     });
   }
 }
