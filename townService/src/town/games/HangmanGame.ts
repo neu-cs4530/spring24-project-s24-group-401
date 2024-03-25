@@ -23,6 +23,7 @@ export default class HangmanGame extends Game<HangmanGameState, HangmanMove> {
       guessedLetters: [],
       incorrectGuessesLeft: 6,
       gamePlayersById: [],
+      turnIndex: 0,
     });
     this._targetWord = targetWord;
     this._board = this._initBoard(targetWord);
@@ -90,7 +91,6 @@ export default class HangmanGame extends Game<HangmanGameState, HangmanMove> {
    *
    */
 
-  // STILL NEED TO IMPLEMENT TURNS
   public applyMove(move: GameMove<HangmanMove>) {
     if (this.state.status !== 'IN_PROGRESS') {
       throw new InvalidParametersError(GAME_NOT_IN_PROGRESS_MESSAGE);
@@ -99,8 +99,7 @@ export default class HangmanGame extends Game<HangmanGameState, HangmanMove> {
       throw new InvalidParametersError(PLAYER_NOT_IN_GAME_MESSAGE);
     }
     // check here to see if it's the players turn
-    const currentGuesserIndex = this.state.guessedLetters.length % this.state.gamePlayersById.length;
-    if (this.state.gamePlayersById[currentGuesserIndex] !== move.playerID) {
+    if (this.state.gamePlayersById[this.state.turnIndex] !== move.playerID) {
       throw new InvalidParametersError(MOVE_NOT_YOUR_TURN_MESSAGE);
     }
     const guessedLetter = move.move.gamePiece.toUpperCase();
@@ -122,6 +121,7 @@ export default class HangmanGame extends Game<HangmanGameState, HangmanMove> {
     } else {
       // if letter is not in the word
       this.state.incorrectGuessesLeft -= 1;
+      this.moveToNextPlayer()
       if (this.state.incorrectGuessesLeft === 0) {
         // player has run out of guesses
         this.state.status = 'OVER';
@@ -175,5 +175,11 @@ export default class HangmanGame extends Game<HangmanGameState, HangmanMove> {
       board += '_';
     }
     return board;
+  }
+  private moveToNextPlayer(): void {
+    this.state = {
+      ...this.state,
+      turnIndex: (this.state.turnIndex + 1) % this.state.gamePlayersById.length,
+    };
   }
 }
