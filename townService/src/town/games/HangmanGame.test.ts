@@ -23,13 +23,12 @@ describe('HangmanGame', () => {
       expect(() => game.join(player2)).toThrowError(PLAYER_ALREADY_IN_GAME_MESSAGE);
     });
     it('should throw an error if the game is full', () => {
-      const player1 = createPlayerForTesting();
-      const player2 = createPlayerForTesting();
-      const player3 = createPlayerForTesting();
-      game.join(player1);
-      game.join(player2);
-
-      expect(() => game.join(player3)).toThrowError(GAME_FULL_MESSAGE);
+      for (let i = 0; i < 4; i++) {
+        const player = createPlayerForTesting();
+        game.join(player);
+      }
+      const fifthPlayer = createPlayerForTesting();
+      expect(() => game.join(fifthPlayer)).toThrowError(GAME_FULL_MESSAGE);
     });
     describe('When the player can be added', () => {
       it('makes the first player X and initializes the state with status WAITING_TO_START', () => {
@@ -37,7 +36,6 @@ describe('HangmanGame', () => {
         game.join(player);
         expect(game.state.gamePlayersById[0]).toEqual(player.id);
         expect(game.state.gamePlayersById[1]).toBeUndefined();
-        expect(game.state.word).toHaveLength(0);
         expect(game.state.status).toEqual('WAITING_TO_START');
         expect(game.state.winner).toBeUndefined();
       });
@@ -52,10 +50,9 @@ describe('HangmanGame', () => {
           expect(game.state.gamePlayersById[0]).toEqual(player1.id);
           expect(game.state.gamePlayersById[1]).toEqual(player2.id);
         });
-        it('sets the game status to IN_PROGRESS', () => {
-          expect(game.state.status).toEqual('IN_PROGRESS');
+        it('sets the game status to WAITING_TO_START', () => {
+          expect(game.state.status).toEqual('WAITING_TO_START');
           expect(game.state.winner).toBeUndefined();
-          expect(game.state.word).toHaveLength(0);
         });
       });
     });

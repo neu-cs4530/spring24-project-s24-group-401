@@ -18,7 +18,7 @@ import Game from './Game';
 
 export default class HangmanGame extends Game<HangmanGameState, HangmanMove> {
   // a list of playerIDs of all Players currently in the game
-  private _maxPlayersAllowed = 10;
+  private _maxPlayersAllowed = 4;
 
   private _correctGuesses: Set<string>;
 
@@ -178,9 +178,7 @@ export default class HangmanGame extends Game<HangmanGameState, HangmanMove> {
     if (this.state.gamePlayersById.includes(player.id)) {
       throw new InvalidParametersError(PLAYER_ALREADY_IN_GAME_MESSAGE);
     }
-    if (this.state.gamePlayersById.length === 0) {
-      this.state.gamePlayersById.push(player.id);
-    }
+    this.state.gamePlayersById.push(player.id);
   }
 
   private _initBoard(targetWord: string): string {
