@@ -1,9 +1,6 @@
-import ConnectFourAreaController, {
-  ConnectFourCell,
-} from '../../../../classes/interactable/ConnectFourAreaController';
 import { Button, chakra, Container, useToast } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
-import { ConnectFourColIndex, HangmanLetter } from '../../../../types/CoveyTownSocket';
+import { HangmanLetter } from '../../../../types/CoveyTownSocket';
 import HangmanAreaController, {
   HangmanCell,
 } from '../../../../classes/interactable/HangmanAreaController';

@@ -29,6 +29,7 @@ import {
 import {
   isConnectFourArea,
   isConversationArea,
+  isHangmanArea,
   isTicTacToeArea,
   isViewingArea,
 } from '../types/TypeUtils';
@@ -42,6 +43,7 @@ import InteractableAreaController, {
 import TicTacToeAreaController from './interactable/TicTacToeAreaController';
 import ViewingAreaController from './interactable/ViewingAreaController';
 import PlayerController from './PlayerController';
+import HangmanAreaController from './interactable/HangmanAreaController';
 
 const CALCULATE_NEARBY_PLAYERS_DELAY_MS = 300;
 const SOCKET_COMMAND_TIMEOUT_MS = 5000;
@@ -630,6 +632,10 @@ export default class TownController extends (EventEmitter as new () => TypedEmit
             this._interactableControllers.push(
               new ConnectFourAreaController(eachInteractable.id, eachInteractable, this),
             );
+          } else if (isHangmanArea(eachInteractable)) {
+            this._interactableControllers.push(
+              new HangmanAreaController(eachInteractable.id, eachInteractable, this),
+            );
           }
         });
         this._userID = initialData.userID;
@@ -771,6 +777,7 @@ export function useTownSettings() {
  * @throws Error if there is no interactable area controller matching the specified ID
  */
 export function useInteractableAreaController<T>(interactableAreaID: string): T {
+  console.log(interactableAreaID)
   const townController = useTownController();
   const interactableAreaController = townController.gameAreas.find(
     eachArea => eachArea.id == interactableAreaID,
