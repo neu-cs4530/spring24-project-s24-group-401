@@ -29,7 +29,7 @@ export default function GameAreaFactory(
     return new ConnectFourGameArea(name, rect, broadcastEmitter);
   }
   if (gameType === 'Hangman') {
-    return new HangmanGameArea(name, rect, broadcastEmitter)
+    return new HangmanGameArea(name, rect, broadcastEmitter);
   }
   throw new Error(`Unknown game area type ${mapObject.class}`);
 }
