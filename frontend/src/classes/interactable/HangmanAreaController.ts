@@ -102,19 +102,19 @@ export default class HangmanAreaController extends GameAreaController<
     turnIndex: 0,
   };
 
-  protected _board: HangmanCell[] = this.getBoard(this._gameState?.word);
+  protected _board: HangmanCell[] = this._getBoard(this._gameState?.word);
 
   /**
    * This class is responsible for managing the state of the Hangman game, and for sending commands to the server
    */
-  private getBoard(wordToBeGuessed: string): HangmanCell[] {
+  private _getBoard(wordToBeGuessed: string): HangmanCell[] {
     if (wordToBeGuessed === '') {
-      return this.createEmptyBoard();
+      return this._createEmptyBoard();
     }
-    return this.createEmptyBoard();
+    return this._createEmptyBoard();
   }
 
-  private createEmptyBoard(): HangmanCell[] {
+  private _createEmptyBoard(): HangmanCell[] {
     this._gameState.word = generateWord();
     const board = new Array(this._gameState.word.length);
     for (let i = 0; i < this._gameState.word.length; i++) {
