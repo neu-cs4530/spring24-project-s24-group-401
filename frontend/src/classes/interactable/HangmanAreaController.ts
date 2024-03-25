@@ -198,7 +198,7 @@ export default class HangmanAreaController extends GameAreaController<
     await this._townController.sendInteractableCommand(this.id, {
       type: 'GameMove',
       gameID: instanceID,
-      move: { gamePiece: letter }
+      move: { gamePiece: letter },
     });
   }
 

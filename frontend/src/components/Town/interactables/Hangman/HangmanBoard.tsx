@@ -137,7 +137,7 @@ export type HangmanGameProps = {
  * The board is re-rendered whenever the board changes, and each cell is re-rendered whenever the value
  * of that cell changes.
  *
- * If the current player is in the game, they can key press one letter at a time to make a guess and 
+ * If the current player is in the game, they can key press one letter at a time to make a guess and
  * make a move. If there is an error making the move, then a toast will be displayed with the error
  * message as the description of the toast. If it is not the current player's turn then all key presses
  * will be disabled.
@@ -157,14 +157,13 @@ export default function HangmanBoard({ gameAreaController }: HangmanGameProps): 
         // Do not handle non-letter keys or if it's not our turn
         return;
       }
-      
       try {
-        let guess = event.key.toUpperCase() as HangmanLetter;
+        const guess = event.key.toUpperCase() as HangmanLetter;
         await gameAreaController.makeMove(guess);
       } catch (error) {
         toast({
           title: 'Error making move',
-          description: error instanceof Error ? error.toString() : 'Ensure it is your turn and try again.',
+          description: error instanceof Error ? error.toString() : 'err',
           status: 'error',
         });
       }

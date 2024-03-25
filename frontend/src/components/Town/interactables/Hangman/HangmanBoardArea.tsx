@@ -52,7 +52,9 @@ export default function HangmanArea({
   const gameAreaController = useInteractableAreaController<HangmanAreaController>(interactableID);
   const townController = useTownController();
 
-  const [players, setPlayers] = useState<PlayerController[]>(gameAreaController.playersByController);
+  const [players, setPlayers] = useState<PlayerController[]>(
+    gameAreaController.playersByController,
+  );
   const [joiningGame, setJoiningGame] = useState(false);
   const [gameStatus, setGameStatus] = useState<GameStatus>(gameAreaController.status);
   const [word, setWord] = useState<string>(gameAreaController.word);
