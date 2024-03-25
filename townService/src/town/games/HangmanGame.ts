@@ -21,6 +21,7 @@ export default class HangmanGame extends Game<HangmanGameState, HangmanMove> {
       status: 'WAITING_TO_START',
       word: 'testWord',
       guessedLetters: [],
+      incorrectGuesses: [],
       incorrectGuessesLeft: 6,
       gamePlayersById: [],
       turnIndex: 0,
@@ -121,6 +122,7 @@ export default class HangmanGame extends Game<HangmanGameState, HangmanMove> {
     } else {
       // if letter is not in the word
       this.state.incorrectGuessesLeft -= 1;
+      this.state.incorrectGuesses.push(guessedLetter);
       this.moveToNextPlayer()
       if (this.state.incorrectGuessesLeft === 0) {
         // player has run out of guesses

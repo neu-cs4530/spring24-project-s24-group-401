@@ -91,6 +91,7 @@ export default class HangmanAreaController extends GameAreaController<
   protected _gameState: HangmanGameState = {
     word: '',
     guessedLetters: [],
+    incorrectGuesses: [],
     incorrectGuessesLeft: 6,
     gamePlayersById: [],
     status: 'WAITING_TO_START',
@@ -195,7 +196,7 @@ export default class HangmanAreaController extends GameAreaController<
       move: {gamePiece: letter} as HangmanMove,
     });
   }
-  
+
   /**
    * Sends a request to the server to start the game.
    *
