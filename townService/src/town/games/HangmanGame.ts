@@ -14,7 +14,6 @@ export default class HangmanGame extends Game<HangmanGameState, HangmanMove> {
   private _correctGuesses: Set<string>;
   private _targetWord: string;
   private _board: string;
-  private _turnIndex: number;
 
   public constructor(targetWord: string) {
     // word to be guessed
@@ -24,11 +23,11 @@ export default class HangmanGame extends Game<HangmanGameState, HangmanMove> {
       guessedLetters: [],
       incorrectGuessesLeft: 6,
       gamePlayersById: [],
+      turnIndex: 0,
     });
     this._targetWord = targetWord;
     this._board = this._initBoard(targetWord);
     this._correctGuesses = new Set([...targetWord]); // Unique letters in the word
-    this._turnIndex = 0;
   }
 
   /**
@@ -88,7 +87,7 @@ export default class HangmanGame extends Game<HangmanGameState, HangmanMove> {
    *
    * @throws InvalidParametersError if the game is not in progress (GAME_NOT_IN_PROGRESS_MESSAGE)
    * @throws InvalidParametersError if the player is not in the game (PLAYER_NOT_IN_GAME_MESSAGE)
-   * @throws InvalidParametersError if the move is not the player's turn (MOVE_NOT_YOUR_turnIndex_MESSAGE)
+   * @throws InvalidParametersError if the move is not the player's turn (MOVE_NOT_YOUR_TURN_MESSAGE)
    *
    */
 
@@ -100,7 +99,7 @@ export default class HangmanGame extends Game<HangmanGameState, HangmanMove> {
       throw new InvalidParametersError(PLAYER_NOT_IN_GAME_MESSAGE);
     }
     // check here to see if it's the players turn
-    if (this.state.gamePlayersById[this._turnIndex] !== move.playerID) {
+    if (this.state.gamePlayersById[this.state.turnIndex] !== move.playerID) {
       throw new InvalidParametersError(MOVE_NOT_YOUR_TURN_MESSAGE);
     }
     const guessedLetter = move.move.gamePiece.toUpperCase();
@@ -178,6 +177,9 @@ export default class HangmanGame extends Game<HangmanGameState, HangmanMove> {
     return board;
   }
   private moveToNextPlayer(): void {
-    this._turnIndex = (this._turnIndex + 1) % this.state.gamePlayersById.length;
+    this.state = {
+      ...this.state,
+      turnIndex: (this.state.turnIndex + 1) % this.state.gamePlayersById.length,
+    };
   }
 }

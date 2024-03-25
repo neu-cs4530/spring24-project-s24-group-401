@@ -126,7 +126,7 @@ export interface HangmanGameState extends WinnableGameState {
   guessedLetters: string[];
   incorrectGuessesLeft: number;
   gamePlayersById: Array<PlayerID>;
-
+  turnIndex: number;
 }
 
 export interface HangmanMove {
