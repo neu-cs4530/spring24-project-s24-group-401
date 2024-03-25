@@ -172,6 +172,10 @@ export default class HangmanAreaController extends GameAreaController<
     return this._gameState.winner;
   }
 
+  get playersByController(): PlayerController[] {
+    return this.occupants;
+  }
+
   protected _updateFrom(newModel: GameArea<HangmanGameState>): void {
     super._updateFrom(newModel);
     const newGame = newModel.game;
@@ -186,7 +190,7 @@ export default class HangmanAreaController extends GameAreaController<
     }
   }
 
-  public async guessLetter(letter: string): Promise<void> {
+  public async makeMove(letter: HangmanLetter): Promise<void> {
     const instanceID = this._instanceID;
     if (!instanceID || this._model.game?.state.status !== 'IN_PROGRESS') {
       throw new Error('No game in progress');
@@ -194,7 +198,7 @@ export default class HangmanAreaController extends GameAreaController<
     await this._townController.sendInteractableCommand(this.id, {
       type: 'GameMove',
       gameID: instanceID,
-      move: { gamePiece: letter } as HangmanMove,
+      move: { gamePiece: letter }
     });
   }
 

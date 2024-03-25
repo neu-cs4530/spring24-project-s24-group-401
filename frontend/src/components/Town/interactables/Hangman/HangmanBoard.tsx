@@ -3,7 +3,7 @@ import ConnectFourAreaController, {
 } from '../../../../classes/interactable/ConnectFourAreaController';
 import { Button, chakra, Container, useToast } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
-import { ConnectFourColIndex } from '../../../../types/CoveyTownSocket';
+import { ConnectFourColIndex, HangmanLetter } from '../../../../types/CoveyTownSocket';
 import HangmanAreaController, {
   HangmanCell,
 } from '../../../../classes/interactable/HangmanAreaController';
@@ -127,24 +127,20 @@ export type HangmanGameProps = {
 };
 
 /**
- * A component that renders the ConnectFour board
+ * A component that renders the Hangman board
  *
- * Renders the ConnectFour board as a "StyledConnectFourBoard", which consists of "StyledConnectFourSquare"s
- * (one for each cell in the board, starting from the top left and going left to right, top to bottom).
+ * Renders the Hangman board as a "StyledHangmanBoard", which consists of "StyledHangmanSquare"s
+ * (one for each letter in the word).
  *
- * Each StyledConnectFourSquare has an aria-label property that describes the cell's position in the board,
- * formatted as `Cell ${rowIndex},${colIndex} (Red|Yellow|Empty)`.
- *
- * The background color of each StyledConnectFourSquare is determined by the value of the cell in the board, either
- * 'red', 'yellow', or '' (an empty for an empty square).
+ * Each StyledHangmanSquare has an aria-label property that describes the cell's position in the board.
  *
  * The board is re-rendered whenever the board changes, and each cell is re-rendered whenever the value
  * of that cell changes.
  *
- * If the current player is in the game, then each StyledConnectFourSquare is clickable, and clicking
- * on it will make a move in that column. If there is an error making the move, then a toast will be
- * displayed with the error message as the description of the toast. If it is not the current player's
- * turn, then the StyledConnectFourSquare will be disabled.
+ * If the current player is in the game, they can key press one letter at a time to make a guess and 
+ * make a move. If there is an error making the move, then a toast will be displayed with the error
+ * message as the description of the toast. If it is not the current player's turn then all key presses
+ * will be disabled.
  *
  * @param gameAreaController the controller for the ConnectFour game
  */
@@ -155,13 +151,35 @@ export default function HangmanBoard({ gameAreaController }: HangmanGameProps): 
   useEffect(() => {
     gameAreaController.addListener('turnChanged', setIsOurTurn);
     gameAreaController.addListener('boardChanged', setBoard);
+
+    const handleKeyPress = async (event: KeyboardEvent) => {
+      if (!isOurTurn || event.key.length !== 1 || !event.key.match(/[a-z]/i)) {
+        // Do not handle non-letter keys or if it's not our turn
+        return;
+      }
+      
+      try {
+        let guess = event.key.toUpperCase() as HangmanLetter;
+        await gameAreaController.makeMove(guess);
+      } catch (error) {
+        toast({
+          title: 'Error making move',
+          description: error instanceof Error ? error.toString() : 'Ensure it is your turn and try again.',
+          status: 'error',
+        });
+      }
+    };
+    // Register the key press event listener
+    window.addEventListener('keypress', handleKeyPress);
+
     return () => {
       gameAreaController.removeListener('boardChanged', setBoard);
       gameAreaController.removeListener('turnChanged', setIsOurTurn);
+      window.removeEventListener('keypress', handleKeyPress);
     };
   }, [gameAreaController]);
   return (
-    <StyledHangmanBoard aria-label='Connect Four Board'>
+    <StyledHangmanBoard aria-label='Hangman Board'>
       {board.map((letter, index) => (
         <StyledHangmanSquare
           key={index}

@@ -52,7 +52,7 @@ export default function HangmanArea({
   const gameAreaController = useInteractableAreaController<HangmanAreaController>(interactableID);
   const townController = useTownController();
 
-  const [players, setPlayers] = useState<PlayerController[]>(gameAreaController.gamePlayersById);
+  const [players, setPlayers] = useState<PlayerController[]>(gameAreaController.playersByController);
   const [joiningGame, setJoiningGame] = useState(false);
   const [gameStatus, setGameStatus] = useState<GameStatus>(gameAreaController.status);
   const [word, setWord] = useState<string>(gameAreaController.word);
@@ -63,7 +63,7 @@ export default function HangmanArea({
   const toast = useToast();
   useEffect(() => {
     const updateGameState = () => {
-      setPlayers(gameAreaController.gamePlayersById);
+      setPlayers(gameAreaController.playersByController);
       setGameStatus(gameAreaController.status);
       setWord(gameAreaController.word);
       setGuessedLetters(gameAreaController.guessedLetters);
@@ -160,8 +160,7 @@ export default function HangmanArea({
     <>
       {gameStatusText}
       <List aria-label='list of players in the game'>
-        {players.map((playerID: string) => {
-          const player = townController.getPlayer(playerID);
+        {players.map((player: PlayerController) => {
           if (player) {
             return <ListItem key={player.id}>{player.userName}</ListItem>;
           }
