@@ -39,7 +39,7 @@ describe('HangmanAreaController', () => {
     nextState.game = nextGame;
     const newState = Object.assign({}, nextGame.state);
     nextGame.state = newState;
-    newState.moves = newState.moves.concat([nextMove]);
+    // newState.moves = newState.moves.concat([nextMove]);
     controller.updateFrom(nextState, controller.occupants);
   }
 });
