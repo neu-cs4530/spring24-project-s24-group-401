@@ -777,7 +777,6 @@ export function useTownSettings() {
  * @throws Error if there is no interactable area controller matching the specified ID
  */
 export function useInteractableAreaController<T>(interactableAreaID: string): T {
-  console.log(interactableAreaID)
   const townController = useTownController();
   const interactableAreaController = townController.gameAreas.find(
     eachArea => eachArea.id == interactableAreaID,
