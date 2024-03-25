@@ -134,7 +134,7 @@ export default class HangmanGame extends Game<HangmanGameState, HangmanMove> {
       // if letter is not in the word
       this.state.incorrectGuessesLeft -= 1;
       this.state.incorrectGuesses.push(guessedLetter);
-      this.moveToNextPlayer();
+      this._moveToNextPlayer();
       if (this.state.incorrectGuessesLeft === 0) {
         // player has run out of guesses
         this.state.status = 'OVER';
@@ -191,7 +191,7 @@ export default class HangmanGame extends Game<HangmanGameState, HangmanMove> {
     return board;
   }
 
-  private moveToNextPlayer(): void {
+  private _moveToNextPlayer(): void {
     this.state = {
       ...this.state,
       turnIndex: (this.state.turnIndex + 1) % this.state.gamePlayersById.length,
