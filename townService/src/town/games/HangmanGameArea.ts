@@ -1,13 +1,23 @@
-import InvalidParametersError, { GAME_ID_MISSMATCH_MESSAGE, GAME_NOT_IN_PROGRESS_MESSAGE, INVALID_COMMAND_MESSAGE } from "../../lib/InvalidParametersError";
-import { HangmanLetter, HangmanMove, InteractableCommand, InteractableCommandReturnType, InteractableType } from "../../types/CoveyTownSocket";
-import GameArea from "./GameArea";
+import { CommandList } from 'twilio/lib/rest/preview/wireless/command';
+import InvalidParametersError, {
+  GAME_ID_MISSMATCH_MESSAGE,
+  GAME_NOT_IN_PROGRESS_MESSAGE,
+  INVALID_COMMAND_MESSAGE,
+} from '../../lib/InvalidParametersError';
+import {
+  HangmanLetter,
+  HangmanMove,
+  InteractableCommand,
+  InteractableCommandReturnType,
+  InteractableType,
+} from '../../types/CoveyTownSocket';
+import GameArea from './GameArea';
 import Player from '../../lib/Player';
-import HangmanGame from "./HangmanGame";
-import { CommandList } from "twilio/lib/rest/preview/wireless/command";
+import HangmanGame from './HangmanGame';
 
 export default class HangmanGameArea extends GameArea<HangmanGame> {
   // letters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
-  
+
   protected getType(): InteractableType {
     return 'HangmanArea';
   }
@@ -35,7 +45,7 @@ export default class HangmanGameArea extends GameArea<HangmanGame> {
       }
       case 'GameMove': {
         this._validateGameId(command.gameID);
-        
+
         /* if (!this.letters.includes(command.move.gamePiece)) {
           throw new InvalidParametersError('Invalid game piece');
         } */
@@ -64,7 +74,9 @@ export default class HangmanGameArea extends GameArea<HangmanGame> {
 
   private _checkGameEnded() {
     if (this.game !== undefined && this.game?.state.status === 'OVER') {
-      const losingPlayerID = this.game.state.gamePlayersById.find(player => player !== this.game?.state.winner)!;
+      const losingPlayerID = this.game.state.gamePlayersById.find(
+        player => player !== this.game?.state.winner,
+      )!;
       // TODO: Handle multiple losers
       const losingPlayer = this.occupants.find(player => player.id === losingPlayerID)!;
       const winningPlayer = this.occupants.find(player => player.id === this.game?.state.winner)!;

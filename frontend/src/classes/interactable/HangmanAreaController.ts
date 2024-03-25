@@ -6,7 +6,7 @@ import {
   HangmanLetter,
   HangmanMove,
   HangmanGameState,
-  PlayerID
+  PlayerID,
 } from '../../types/CoveyTownSocket';
 
 export type HangmanCell = HangmanLetter | undefined;
@@ -50,7 +50,6 @@ export default class HangmanAreaController extends GameAreaController<
   HangmanGameState,
   HangmanEvents
 > {
-  
   /**
    * Returns the current state of the board.
    *
@@ -74,7 +73,11 @@ export default class HangmanAreaController extends GameAreaController<
    * Follows the same logic as the backend, respecting the firstPlayer field of the gameState
    */
   get whoseTurn(): PlayerID | undefined {
-    if (this._model.game === undefined || this._model.game.state.gamePlayersById.length === 0 || this._model.game.state.status !== 'IN_PROGRESS') {
+    if (
+      this._model.game === undefined ||
+      this._model.game.state.gamePlayersById.length === 0 ||
+      this._model.game.state.status !== 'IN_PROGRESS'
+    ) {
       return undefined;
     }
     return this._model.game.state.gamePlayersById[this._model.game.state.turnIndex];
@@ -101,21 +104,21 @@ export default class HangmanAreaController extends GameAreaController<
 
   protected _board: HangmanCell[] = this.getBoard(this._gameState?.word);
 
-    /**
+  /**
    * This class is responsible for managing the state of the Hangman game, and for sending commands to the server
    */
   private getBoard(wordToBeGuessed: string): HangmanCell[] {
     if (wordToBeGuessed === '') {
-      return this.createEmptyBoard()
+      return this.createEmptyBoard();
     }
     return this.createEmptyBoard();
   }
 
   private createEmptyBoard(): HangmanCell[] {
-    this._gameState.word = generateWord()
+    this._gameState.word = generateWord();
     const board = new Array(this._gameState.word.length);
     for (let i = 0; i < this._gameState.word.length; i++) {
-      board[i] = undefined
+      board[i] = undefined;
     }
     return board;
   }
@@ -155,7 +158,6 @@ export default class HangmanAreaController extends GameAreaController<
     return this._model.game?.state.turnIndex || 0;
   }
 
-
   /**
    * Returns the current status of the game.
    */
@@ -171,7 +173,6 @@ export default class HangmanAreaController extends GameAreaController<
   }
 
   protected _updateFrom(newModel: GameArea<HangmanGameState>): void {
-
     super._updateFrom(newModel);
     const newGame = newModel.game;
     if (newGame) {
@@ -193,7 +194,7 @@ export default class HangmanAreaController extends GameAreaController<
     await this._townController.sendInteractableCommand(this.id, {
       type: 'GameMove',
       gameID: instanceID,
-      move: {gamePiece: letter} as HangmanMove,
+      move: { gamePiece: letter } as HangmanMove,
     });
   }
 

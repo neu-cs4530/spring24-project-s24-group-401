@@ -1,4 +1,12 @@
-import InvalidParametersError, { MOVE_NOT_YOUR_TURN_MESSAGE, GAME_FULL_MESSAGE, GAME_NOT_IN_PROGRESS_MESSAGE, GAME_NOT_STARTABLE_MESSAGE, LETTER_ALREADY_GUESSED_MESSAGE, PLAYER_ALREADY_IN_GAME_MESSAGE, PLAYER_NOT_IN_GAME_MESSAGE } from '../../lib/InvalidParametersError';
+import InvalidParametersError, {
+  MOVE_NOT_YOUR_TURN_MESSAGE,
+  GAME_FULL_MESSAGE,
+  GAME_NOT_IN_PROGRESS_MESSAGE,
+  GAME_NOT_STARTABLE_MESSAGE,
+  LETTER_ALREADY_GUESSED_MESSAGE,
+  PLAYER_ALREADY_IN_GAME_MESSAGE,
+  PLAYER_NOT_IN_GAME_MESSAGE,
+} from '../../lib/InvalidParametersError';
 import Player from '../../lib/Player';
 import { GameMove, HangmanGameState, HangmanMove } from '../../types/CoveyTownSocket';
 import Game from './Game';
@@ -11,8 +19,11 @@ import Game from './Game';
 export default class HangmanGame extends Game<HangmanGameState, HangmanMove> {
   // a list of playerIDs of all Players currently in the game
   private _maxPlayersAllowed = 10;
+
   private _correctGuesses: Set<string>;
+
   private _targetWord: string;
+
   private _board: string;
 
   public constructor(targetWord: string) {
@@ -72,7 +83,7 @@ export default class HangmanGame extends Game<HangmanGameState, HangmanMove> {
     }
     this.state = {
       ...this.state,
-      status: 'IN_PROGRESS'
+      status: 'IN_PROGRESS',
     };
   }
 
@@ -123,7 +134,7 @@ export default class HangmanGame extends Game<HangmanGameState, HangmanMove> {
       // if letter is not in the word
       this.state.incorrectGuessesLeft -= 1;
       this.state.incorrectGuesses.push(guessedLetter);
-      this.moveToNextPlayer()
+      this.moveToNextPlayer();
       if (this.state.incorrectGuessesLeft === 0) {
         // player has run out of guesses
         this.state.status = 'OVER';
@@ -144,6 +155,7 @@ export default class HangmanGame extends Game<HangmanGameState, HangmanMove> {
     }
     return board;
   }
+
   private _removePlayer(player: Player) {
     const index = this.state.gamePlayersById.indexOf(player.id);
     if (index > -1) {
@@ -178,6 +190,7 @@ export default class HangmanGame extends Game<HangmanGameState, HangmanMove> {
     }
     return board;
   }
+
   private moveToNextPlayer(): void {
     this.state = {
       ...this.state,

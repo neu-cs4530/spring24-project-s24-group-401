@@ -49,8 +49,7 @@ export default function HangmanArea({
 }: {
   interactableID: InteractableID;
 }): JSX.Element {
-  const gameAreaController =
-    useInteractableAreaController<HangmanAreaController>(interactableID);
+  const gameAreaController = useInteractableAreaController<HangmanAreaController>(interactableID);
   const townController = useTownController();
 
   const [players, setPlayers] = useState<PlayerController[]>(gameAreaController.gamePlayersById);
@@ -58,7 +57,9 @@ export default function HangmanArea({
   const [gameStatus, setGameStatus] = useState<GameStatus>(gameAreaController.status);
   const [word, setWord] = useState<string>(gameAreaController.word);
   const [guessedLetters, setGuessedLetters] = useState<string[]>(gameAreaController.guessedLetters);
-  const [incorrectGuessesLeft, setIncorrectGuessesLeft] = useState<number>(gameAreaController.incorrectGuessesLeft);
+  const [incorrectGuessesLeft, setIncorrectGuessesLeft] = useState<number>(
+    gameAreaController.incorrectGuessesLeft,
+  );
   const toast = useToast();
   useEffect(() => {
     const updateGameState = () => {
@@ -159,13 +160,13 @@ export default function HangmanArea({
     <>
       {gameStatusText}
       <List aria-label='list of players in the game'>
-              {players.map((playerID: string) => {
-                const player = townController.getPlayer(playerID);
-                if (player){
-                return <ListItem key={player.id}>{player.userName}</ListItem>;
-                }
-              })}
-            </List>
+        {players.map((playerID: string) => {
+          const player = townController.getPlayer(playerID);
+          if (player) {
+            return <ListItem key={player.id}>{player.userName}</ListItem>;
+          }
+        })}
+      </List>
       <HangmanBoard gameAreaController={gameAreaController} />
     </>
   );

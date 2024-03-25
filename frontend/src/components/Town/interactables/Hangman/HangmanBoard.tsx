@@ -4,7 +4,9 @@ import ConnectFourAreaController, {
 import { Button, chakra, Container, useToast } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
 import { ConnectFourColIndex } from '../../../../types/CoveyTownSocket';
-import HangmanAreaController, { HangmanCell } from '../../../../classes/interactable/HangmanAreaController';
+import HangmanAreaController, {
+  HangmanCell,
+} from '../../../../classes/interactable/HangmanAreaController';
 
 const head = (
   <div
@@ -93,7 +95,7 @@ const leftLeg = (
   />
 );
 
-const BODY_PARTS = [head, body, rightArm, leftArm, rightLeg, leftLeg]
+const BODY_PARTS = [head, body, rightArm, leftArm, rightLeg, leftLeg];
 
 const StyledHangmanBoard = chakra(Container, {
   baseStyle: {
@@ -119,7 +121,6 @@ const StyledHangmanSquare = chakra(Button, {
     },
   },
 });
-
 
 export type HangmanGameProps = {
   gameAreaController: HangmanAreaController;
@@ -147,9 +148,7 @@ export type HangmanGameProps = {
  *
  * @param gameAreaController the controller for the ConnectFour game
  */
-export default function HangmanBoard({
-  gameAreaController,
-}: HangmanGameProps): JSX.Element {
+export default function HangmanBoard({ gameAreaController }: HangmanGameProps): JSX.Element {
   const [board, setBoard] = useState<HangmanCell[]>(gameAreaController.board);
   const [isOurTurn, setIsOurTurn] = useState(gameAreaController.isOurTurn);
   const toast = useToast();
@@ -167,11 +166,10 @@ export default function HangmanBoard({
         <StyledHangmanSquare
           key={index}
           disabled={true} // Disable interaction directly with squares
-          aria-label={`Letter ${index + 1} of the word`}
-        >
+          aria-label={`Letter ${index + 1} of the word`}>
           {letter || '_'}
         </StyledHangmanSquare>
-      ))} 
-      </StyledHangmanBoard>
+      ))}
+    </StyledHangmanBoard>
   );
 }

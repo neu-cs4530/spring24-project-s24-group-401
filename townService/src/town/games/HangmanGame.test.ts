@@ -1,15 +1,9 @@
 import { createPlayerForTesting } from '../../TestUtils';
 import {
   GAME_FULL_MESSAGE,
-  GAME_NOT_IN_PROGRESS_MESSAGE,
-  BOARD_POSITION_NOT_EMPTY_MESSAGE,
-  MOVE_NOT_YOUR_TURN_MESSAGE,
   PLAYER_ALREADY_IN_GAME_MESSAGE,
-  PLAYER_NOT_IN_GAME_MESSAGE,
 } from '../../lib/InvalidParametersError';
 import HangmanGame from './HangmanGame';
-import Player from '../../lib/Player';
-import { HangmanMove } from '../../types/CoveyTownSocket';
 
 describe('HangmanGame', () => {
   let game: HangmanGame;

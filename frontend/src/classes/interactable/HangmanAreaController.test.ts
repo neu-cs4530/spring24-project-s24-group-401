@@ -1,19 +1,12 @@
 import assert from 'assert';
 import { mock } from 'jest-mock-extended';
 import { nanoid } from 'nanoid';
-import {
-  HangmanMove,
-  GameResult,
-  GameStatus,
-} from '../../types/CoveyTownSocket';
+import { HangmanMove } from '../../types/CoveyTownSocket';
 import PlayerController from '../PlayerController';
 import TownController from '../TownController';
 import HangmanAreaController from './HangmanAreaController';
-import GameAreaController, { NO_GAME_IN_PROGRESS_ERROR } from './GameAreaController';
 
-
-// Co-Pilot generated tests, will be edited as we build functionality 
-
+// Co-Pilot generated tests, will be edited as we build functionality
 
 describe('HangmanAreaController', () => {
   const ourPlayer = new PlayerController(nanoid(), nanoid(), {
@@ -40,10 +33,7 @@ describe('HangmanAreaController', () => {
     return p;
   });
 
-  function updateGameWithMove(
-    controller: HangmanAreaController,
-    nextMove: HangmanMove,
-  ): void {
+  function updateGameWithMove(controller: HangmanAreaController, nextMove: HangmanMove): void {
     const nextState = Object.assign({}, controller.toInteractableAreaModel());
     const nextGame = Object.assign({}, nextState.game);
     nextState.game = nextGame;
@@ -52,7 +42,4 @@ describe('HangmanAreaController', () => {
     newState.moves = newState.moves.concat([nextMove]);
     controller.updateFrom(nextState, controller.occupants);
   }
-
-  
-  
 });
