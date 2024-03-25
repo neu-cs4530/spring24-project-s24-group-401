@@ -64,7 +64,7 @@ export default class HangmanAreaController extends GameAreaController<
    * Returns true if it is our turn to make a move, false otherwise
    */
   get isOurTurn(): boolean {
-    return this.whoseTurn === this._townController.ourPlayer.id;
+    return this.whoseTurn === this._townController.ourPlayer?.id;
   }
 
   /**
@@ -84,8 +84,10 @@ export default class HangmanAreaController extends GameAreaController<
    * Returns true if the game is not empty and the game is not waiting for players
    */
   public isActive(): boolean {
-    throw new Error('Method not implemented.');
+    const state = this._model.game?.state;
+    return state?.status !== 'WAITING_FOR_PLAYERS' && !this.isEmpty();
   }
+
   protected _gameState: HangmanGameState = {
     word: '',
     guessedLetters: [],
@@ -190,9 +192,10 @@ export default class HangmanAreaController extends GameAreaController<
     await this._townController.sendInteractableCommand(this.id, {
       type: 'GameMove',
       gameID: instanceID,
-      move: {} as HangmanMove,
+      move: {gamePiece: letter} as HangmanMove,
     });
   }
+  
   /**
    * Sends a request to the server to start the game.
    *
