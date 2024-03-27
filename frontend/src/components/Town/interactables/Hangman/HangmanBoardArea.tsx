@@ -64,6 +64,7 @@ export default function HangmanArea({
   );
   const toast = useToast();
   useEffect(() => {
+    console.log(gameStatus);
     const updateGameState = () => {
       setPlayers(gameAreaController.playersByController);
       setGameStatus(gameAreaController.status);

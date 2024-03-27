@@ -29,7 +29,7 @@ export default class HangmanGame extends Game<HangmanGameState, HangmanMove> {
   public constructor(targetWord: string) {
     // word to be guessed
     super({
-      status: 'WAITING_TO_START',
+      status: 'WAITING_FOR_PLAYERS',
       word: 'testWord',
       guessedLetters: [],
       incorrectGuesses: [],
@@ -179,6 +179,8 @@ export default class HangmanGame extends Game<HangmanGameState, HangmanMove> {
       throw new InvalidParametersError(PLAYER_ALREADY_IN_GAME_MESSAGE);
     }
     this.state.gamePlayersById.push(player.id);
+    this.state.status = 'WAITING_TO_START';
+    console.log("Joined");
   }
 
   private _initBoard(targetWord: string): string {

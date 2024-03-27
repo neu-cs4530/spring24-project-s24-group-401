@@ -97,7 +97,7 @@ export default class HangmanAreaController extends GameAreaController<
     incorrectGuesses: [],
     incorrectGuessesLeft: 6,
     gamePlayersById: [],
-    status: 'WAITING_TO_START',
+    status: 'WAITING_FOR_PLAYERS',
     winner: undefined,
     turnIndex: 0,
   };
