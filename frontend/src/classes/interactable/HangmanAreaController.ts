@@ -60,7 +60,7 @@ export default class HangmanAreaController extends GameAreaController<
   }
 
   /**
-   * Returns true if it is our turn to make a move, false otherwise 
+   * Returns true if it is our turn to make a move, false otherwise
    */
   get isOurTurn(): boolean {
     return this.whoseTurn === this._townController.ourPlayer?.id;

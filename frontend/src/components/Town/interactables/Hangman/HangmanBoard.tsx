@@ -144,7 +144,7 @@ export type HangmanGameProps = {
 export default function HangmanBoard({ gameAreaController }: HangmanGameProps): JSX.Element {
   const [board, setBoard] = useState<HangmanCell[]>(gameAreaController.board);
   const [isOurTurn, setIsOurTurn] = useState(gameAreaController.isOurTurn);
-  const [guess, setGuess] = useState(''); 
+  const [guess, setGuess] = useState('');
   const toast = useToast();
   useEffect(() => {
     gameAreaController.addListener('turnChanged', setIsOurTurn);
@@ -189,14 +189,14 @@ export default function HangmanBoard({ gameAreaController }: HangmanGameProps): 
           </StyledHangmanSquare>
         ))}
       </StyledHangmanBoard>
-      <chakra.form onSubmit={handleSubmit} display="flex" justifyContent="center" mt="4">
-      <Input
-        placeholder="Enter a letter"
-        value={guess}
-        onChange={(e) => setGuess(e.target.value)}
-        isDisabled={!isOurTurn}
-        maxLength={1} // Limit input to a single character
-      />
+      <chakra.form onSubmit={handleSubmit} display='flex' justifyContent='center' mt='4'>
+        <Input
+          placeholder="Enter a letter"
+          value={guess}
+          onChange={(e) => setGuess(e.target.value)}
+          isDisabled={!isOurTurn}
+          maxLength={1} // Limit input to a single character
+        />
       <Button
         ml="2"
         colorScheme="blue"
