@@ -191,21 +191,20 @@ export default function HangmanBoard({ gameAreaController }: HangmanGameProps): 
       </StyledHangmanBoard>
       <chakra.form onSubmit={handleSubmit} display='flex' justifyContent='center' mt='4'>
         <Input
-          placeholder="Enter a letter"
+          placeholder='Enter a letter'
           value={guess}
-          onChange={(e) => setGuess(e.target.value)}
+          onChange={e => setGuess(e.target.value)}
           isDisabled={!isOurTurn}
           maxLength={1} // Limit input to a single character
         />
-      <Button
-        ml="2"
-        colorScheme="blue"
-        type="submit"
-        isDisabled={!isOurTurn || guess.length !== 1}
-      >
+        <Button
+          ml='2'
+          colorScheme='blue'
+          type='submit'
+          isDisabled={!isOurTurn || guess.length !== 1}>
         Guess
-      </Button>
-    </chakra.form>
+        </Button>
+      </chakra.form>
   </>
   );
 }
