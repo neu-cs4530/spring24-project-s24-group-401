@@ -4,7 +4,7 @@ import { mock, mockReset } from 'jest-mock-extended';
 import { nanoid } from 'nanoid';
 import { act } from 'react-dom/test-utils';
 import React from 'react';
-import HangmanArea from './HangmanBoardArea';
+import HangmanArea from './HangmanArea';
 import HangmanAreaController, {
   HangmanCell,
 } from '../../../../classes/interactable/HangmanAreaController';
