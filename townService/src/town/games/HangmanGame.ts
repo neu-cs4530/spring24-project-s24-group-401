@@ -48,7 +48,7 @@ export default class HangmanGame extends Game<HangmanGameState, HangmanMove> {
    *
    * If the game state is currently "IN_PROGRESS" and there is only one player, updates winner to undefined
    * If only no players are left in the game, updates the game state to "WAITING_FOR_PLAYERS"
-   * 
+   *
    * @param player The player to remove from the game
    * @throws InvalidParametersError if the player is not in the game (PLAYER_NOT_IN_GAME_MESSAGE)
    */
