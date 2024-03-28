@@ -46,8 +46,9 @@ export default class HangmanGame extends Game<HangmanGameState, HangmanMove> {
    * Removes a player from the game.
    * Updates the game's state to reflect the player leaving.
    *
-   * If the game state is currently "IN_PROGRESS" and there is only player, updates winner to undefined
-   *
+   * If the game state is currently "IN_PROGRESS" and there is only one player, updates winner to undefined
+   * If only no players are left in the game, updates the game state to "WAITING_FOR_PLAYERS"
+   * 
    * @param player The player to remove from the game
    * @throws InvalidParametersError if the player is not in the game (PLAYER_NOT_IN_GAME_MESSAGE)
    */
@@ -61,6 +62,12 @@ export default class HangmanGame extends Game<HangmanGameState, HangmanMove> {
       this.state.winner = undefined;
     } else {
       this._removePlayer(player);
+    }
+    if (this.state.gamePlayersById.length === 0) {
+      this.state = {
+        ...this.state,
+        status: 'WAITING_FOR_PLAYERS',
+      };
     }
   }
 
@@ -179,8 +186,10 @@ export default class HangmanGame extends Game<HangmanGameState, HangmanMove> {
       throw new InvalidParametersError(PLAYER_ALREADY_IN_GAME_MESSAGE);
     }
     this.state.gamePlayersById.push(player.id);
-    this.state.status = 'WAITING_TO_START';
-    console.log("Joined");
+    this.state = {
+      ...this.state,
+      status: 'WAITING_TO_START',
+    };
   }
 
   private _initBoard(targetWord: string): string {
