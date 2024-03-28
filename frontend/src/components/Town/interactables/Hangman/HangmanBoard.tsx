@@ -202,9 +202,9 @@ export default function HangmanBoard({ gameAreaController }: HangmanGameProps): 
           colorScheme='blue'
           type='submit'
           isDisabled={!isOurTurn || guess.length !== 1}>
-        Guess
+          Guess
         </Button>
       </chakra.form>
-  </>
+    </>
   );
 }
