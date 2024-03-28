@@ -170,8 +170,9 @@ export default class HangmanAreaController extends GameAreaController<
   }
 
   get playersByController(): PlayerController[] {
-    this._model.game?.state.gamePlayersById;
-    return this.occupants.filter(player => this._model.game?.state.gamePlayersById.includes(player.id));
+    return this.occupants.filter(player =>
+      this._model.game?.state.gamePlayersById.includes(player.id),
+    );
   }
 
   protected _updateFrom(newModel: GameArea<HangmanGameState>): void {

@@ -166,7 +166,11 @@ export default function HangmanArea({
       <List aria-label='list of players in the game'>
         {players.map((player: PlayerController, index) => {
           if (player) {
-            return <ListItem key={player.id}>Player{index + 1}: {player.userName}</ListItem>;
+            return (
+              <ListItem key={player.id}>
+                Player{index + 1}: {player.userName}
+              </ListItem>
+            );
           }
         })}
       </List>
