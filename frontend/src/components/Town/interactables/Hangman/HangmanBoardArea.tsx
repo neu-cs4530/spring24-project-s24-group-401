@@ -102,10 +102,10 @@ export default function HangmanArea({
     gameStatusText = (
       <>
         Game in progress, {incorrectGuessesLeft} incorrect guesses left, currently{' '}
-        {/* {gameAreaController.whoseTurn === townController.ourPlayer
+        {gameAreaController.isOurTurn
           ? 'your'
-          : gameAreaController.whoseTurn?.userName + "'s"}{' '} */}
-        your turn
+          : gameAreaController.whoseTurn + "'s"}{' '}
+        turn{' '}
       </>
     );
   } else if (gameStatus == 'WAITING_TO_START') {
