@@ -97,7 +97,7 @@ export default class HangmanAreaController extends GameAreaController<
     incorrectGuesses: [],
     incorrectGuessesLeft: 6,
     gamePlayersById: [],
-    status: 'WAITING_TO_START',
+    status: 'WAITING_FOR_PLAYERS',
     winner: undefined,
     turnIndex: 0,
   };
@@ -145,13 +145,6 @@ export default class HangmanAreaController extends GameAreaController<
   }
 
   /**
-   * Returns an array of player IDs who are participating in the game.
-   */
-  get gamePlayersById(): string[] {
-    return this._gameState.gamePlayersById;
-  }
-
-  /**
    * Returns the number index of the Player whose turn it is.
    */
   get turnIndex(): number {
@@ -162,7 +155,11 @@ export default class HangmanAreaController extends GameAreaController<
    * Returns the current status of the game.
    */
   get status(): GameStatus {
-    return this._gameState.status;
+    const status = this._model.game?.state.status;
+    if (!status) {
+      return 'WAITING_FOR_PLAYERS';
+    }
+    return status;
   }
 
   /**
@@ -173,7 +170,9 @@ export default class HangmanAreaController extends GameAreaController<
   }
 
   get playersByController(): PlayerController[] {
-    return this.occupants;
+    return this.occupants.filter(player =>
+      this._model.game?.state.gamePlayersById.includes(player.id),
+    );
   }
 
   protected _updateFrom(newModel: GameArea<HangmanGameState>): void {

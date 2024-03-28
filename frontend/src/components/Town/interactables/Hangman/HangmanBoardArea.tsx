@@ -64,9 +64,11 @@ export default function HangmanArea({
   );
   const toast = useToast();
   useEffect(() => {
+    console.log(gameStatus);
     const updateGameState = () => {
+      console.log('GAME UPDATED');
       setPlayers(gameAreaController.playersByController);
-      setGameStatus(gameAreaController.status);
+      setGameStatus(gameAreaController.status || 'WAITING_TO_START');
       setWord(gameAreaController.word);
       setGuessedLetters(gameAreaController.guessedLetters);
       setIncorrectGuessesLeft(gameAreaController.incorrectGuessesLeft);
@@ -162,9 +164,13 @@ export default function HangmanArea({
     <>
       {gameStatusText}
       <List aria-label='list of players in the game'>
-        {players.map((player: PlayerController) => {
+        {players.map((player: PlayerController, index) => {
           if (player) {
-            return <ListItem key={player.id}>{player.userName}</ListItem>;
+            return (
+              <ListItem key={player.id}>
+                Player{index + 1}: {player.userName}
+              </ListItem>
+            );
           }
         })}
       </List>
