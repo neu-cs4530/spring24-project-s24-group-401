@@ -82,6 +82,7 @@ export default class HangmanGame extends Game<HangmanGameState, HangmanMove> {
    * @param player The player who is ready to start the game
    */
   public startGame(player: Player): void {
+    console.log("Model start");
     if (this.state.status !== 'WAITING_TO_START') {
       throw new InvalidParametersError(GAME_NOT_STARTABLE_MESSAGE);
     }
@@ -111,6 +112,7 @@ export default class HangmanGame extends Game<HangmanGameState, HangmanMove> {
    */
 
   public applyMove(move: GameMove<HangmanMove>) {
+    console.log(move);
     if (this.state.status !== 'IN_PROGRESS') {
       throw new InvalidParametersError(GAME_NOT_IN_PROGRESS_MESSAGE);
     }
@@ -179,6 +181,7 @@ export default class HangmanGame extends Game<HangmanGameState, HangmanMove> {
    * @param player the player to join the game
    */
   protected _join(player: Player) {
+    console.log("joined");
     if (this.state.gamePlayersById.length === this._maxPlayersAllowed) {
       throw new InvalidParametersError(GAME_FULL_MESSAGE);
     }
