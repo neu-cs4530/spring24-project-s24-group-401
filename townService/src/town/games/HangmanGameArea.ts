@@ -5,7 +5,8 @@ import InvalidParametersError, {
   INVALID_COMMAND_MESSAGE,
 } from '../../lib/InvalidParametersError';
 import {
-  HangmanLetter,
+  GameInstance,
+  HangmanGameState,
   HangmanMove,
   InteractableCommand,
   InteractableCommandReturnType,
@@ -28,41 +29,55 @@ export default class HangmanGameArea extends GameArea<HangmanGame> {
   ): InteractableCommandReturnType<CommandType> {
     switch (command.type) {
       case 'JoinGame': {
-        let { game } = this;
+        let game = this._game;
         if (!game || game.state.status === 'OVER') {
-          game = new HangmanGame('testword'); // TODO: Implement word generation
+          // No game in progress, make a new one
+          game = new HangmanGame('testword');
           this._game = game;
         }
-        this._game?.join(player);
+        game.join(player);
         this._emitAreaChanged();
-        return { gameID: this._game?.id } as InteractableCommandReturnType<CommandType>;
+        return { gameID: game.id } as InteractableCommandReturnType<CommandType>;
       }
       case 'StartGame': {
-        this._validateGameId(command.gameID);
-        this.game?.startGame(player);
+        const game = this._game;
+        if (!game) {
+          throw new InvalidParametersError(GAME_NOT_IN_PROGRESS_MESSAGE);
+        }
+        if (this._game?.id !== command.gameID) {
+          throw new InvalidParametersError(GAME_ID_MISSMATCH_MESSAGE);
+        }
+        game.startGame(player);
         this._emitAreaChanged();
         return undefined as InteractableCommandReturnType<CommandType>;
       }
       case 'GameMove': {
-        this._validateGameId(command.gameID);
-
-        /* if (!this.letters.includes(command.move.gamePiece)) {
-          throw new InvalidParametersError('Invalid game piece');
-        } */
-
-        this.game?.applyMove({
+        if (this._game?.id !== command.gameID) {
+          throw new InvalidParametersError(GAME_ID_MISSMATCH_MESSAGE);
+        }
+        const game = this._game;
+        if (!game) {
+          throw new InvalidParametersError(GAME_NOT_IN_PROGRESS_MESSAGE);
+        }
+        game.applyMove({
           gameID: command.gameID,
           playerID: player.id,
           move: command.move as HangmanMove,
         });
-        this._checkGameEnded();
+        this._checkGameEnded(game.toModel());
         this._emitAreaChanged();
         return undefined as InteractableCommandReturnType<CommandType>;
       }
       case 'LeaveGame': {
-        this._validateGameId(command.gameID);
-        this.game?.leave(player);
-        this._checkGameEnded();
+        const game = this._game;
+        if (!game) {
+          throw new InvalidParametersError(GAME_NOT_IN_PROGRESS_MESSAGE);
+        }
+        if (this._game?.id !== command.gameID) {
+          throw new InvalidParametersError(GAME_ID_MISSMATCH_MESSAGE);
+        }
+        game.leave(player);
+        this._checkGameEnded(game.toModel());
         this._emitAreaChanged();
         return undefined as InteractableCommandReturnType<CommandType>;
       }
@@ -72,41 +87,22 @@ export default class HangmanGameArea extends GameArea<HangmanGame> {
     }
   }
 
-  private _checkGameEnded() {
-    if (this.game !== undefined && this.game?.state.status === 'OVER') {
-      const losingPlayerID = this.game.state.gamePlayersById.find(
-        player => player !== this.game?.state.winner,
+  private _checkGameEnded(updatedState: GameInstance<HangmanGameState>) {
+    if (updatedState.state.status === 'OVER' && this._game) {
+      const gameID = this._game.id;
+      const losingPlayerID = updatedState.state.gamePlayersById.find(
+        player => player !== updatedState.state.winner,
       )!;
       // TODO: Handle multiple losers
       const losingPlayer = this.occupants.find(player => player.id === losingPlayerID)!;
       const winningPlayer = this.occupants.find(player => player.id === this.game?.state.winner)!;
       this._history.push({
-        gameID: this.game.id,
+        gameID,
         scores: {
           [winningPlayer.userName]: 1,
           [losingPlayer.userName]: 0,
         },
       });
-    }
-  }
-
-  private _validateCorrectGameInProgress(gameId: string) {
-    this._validateGameId(gameId);
-    this._validateGameInProgress();
-  }
-
-  private _validateGameInProgress() {
-    if (this._game?.state.status !== 'IN_PROGRESS') {
-      throw new InvalidParametersError(GAME_NOT_IN_PROGRESS_MESSAGE);
-    }
-  }
-
-  private _validateGameId(gameId: string) {
-    if (this.game === undefined) {
-      throw new InvalidParametersError(GAME_NOT_IN_PROGRESS_MESSAGE);
-    }
-    if (this._game?.id !== gameId) {
-      throw new InvalidParametersError(GAME_ID_MISSMATCH_MESSAGE);
     }
   }
 }

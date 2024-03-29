@@ -1,4 +1,4 @@
-import { Button, chakra, Container, useToast } from '@chakra-ui/react';
+import { Button, chakra, Input, Container, useToast } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
 import { HangmanLetter } from '../../../../types/CoveyTownSocket';
 import HangmanAreaController, {
@@ -144,46 +144,67 @@ export type HangmanGameProps = {
 export default function HangmanBoard({ gameAreaController }: HangmanGameProps): JSX.Element {
   const [board, setBoard] = useState<HangmanCell[]>(gameAreaController.board);
   const [isOurTurn, setIsOurTurn] = useState(gameAreaController.isOurTurn);
+  const [guess, setGuess] = useState('');
   const toast = useToast();
   useEffect(() => {
     gameAreaController.addListener('turnChanged', setIsOurTurn);
     gameAreaController.addListener('boardChanged', setBoard);
 
-    const handleKeyPress = async (event: KeyboardEvent) => {
-      if (!isOurTurn || event.key.length !== 1 || !event.key.match(/[a-z]/i)) {
-        // Do not handle non-letter keys or if it's not our turn
-        return;
-      }
-      try {
-        const guess = event.key.toUpperCase() as HangmanLetter;
-        await gameAreaController.makeMove(guess);
-      } catch (error) {
-        toast({
-          title: 'Error making move',
-          description: error instanceof Error ? error.toString() : 'err',
-          status: 'error',
-        });
-      }
-    };
-    // Register the key press event listener
-    window.addEventListener('keypress', handleKeyPress);
-
     return () => {
       gameAreaController.removeListener('boardChanged', setBoard);
       gameAreaController.removeListener('turnChanged', setIsOurTurn);
-      window.removeEventListener('keypress', handleKeyPress);
     };
   }, [gameAreaController]);
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault(); // Prevent form submission from reloading the page
+    if (!isOurTurn || guess.length !== 1 || !guess.match(/[a-z]/i)) {
+      toast({
+        title: 'Invalid guess',
+        description: 'Please enter a single letter.',
+        status: 'warning',
+      });
+      return;
+    }
+    try {
+      const guessLetter = guess.toUpperCase() as HangmanLetter;
+      await gameAreaController.makeMove(guessLetter);
+      setGuess(''); // Clear the input field after submitting
+    } catch (error) {
+      toast({
+        title: 'Error making move',
+        description: error instanceof Error ? error.toString() : 'An error occurred',
+        status: 'error',
+      });
+    }
+  };
   return (
-    <StyledHangmanBoard aria-label='Hangman Board'>
-      {board.map((letter, index) => (
-        <StyledHangmanSquare
-          key={index}
-          disabled={true} // Disable interaction directly with squares
-          aria-label={`Letter ${index + 1} of the word`}>
-          {letter || '_'}
-        </StyledHangmanSquare>
-      ))}
-    </StyledHangmanBoard>
+    <>
+      <StyledHangmanBoard aria-label='Hangman Board'>
+        {board.map((letter, index) => (
+          <StyledHangmanSquare
+            key={index}
+            disabled={true} // Disable interaction directly with squares
+            aria-label={`Letter ${index + 1} of the word`}>
+            {letter || '_'}
+          </StyledHangmanSquare>
+        ))}
+      </StyledHangmanBoard>
+      <chakra.form onSubmit={handleSubmit} display='flex' justifyContent='center' mt='4'>
+        <Input
+          placeholder='Enter a letter'
+          value={guess}
+          onChange={e => setGuess(e.target.value)}
+          isDisabled={!isOurTurn}
+          maxLength={1} // Limit input to a single character
+        />
+        <Button
+          ml='2'
+          colorScheme='blue'
+          type='submit'
+          isDisabled={!isOurTurn || guess.length !== 1}>
+          Guess
+        </Button>
+      </chakra.form>
+    </>
   );
 }

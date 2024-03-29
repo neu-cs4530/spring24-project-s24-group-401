@@ -80,7 +80,7 @@ export default class HangmanAreaController extends GameAreaController<
     ) {
       return undefined;
     }
-    return this._model.game.state.gamePlayersById[this._model.game.state.turnIndex];
+    return this._gameState.gamePlayersById[this._gameState.turnIndex];
   }
 
   /**
@@ -186,6 +186,7 @@ export default class HangmanAreaController extends GameAreaController<
       this.emit('gamePlayersByIdChanged', this._gameState.gamePlayersById);
       this.emit('statusChanged', this._gameState.status);
       this.emit('winnerChanged', this._gameState.winner);
+      this.emit('turnChanged', this.isOurTurn);
     }
   }
 
