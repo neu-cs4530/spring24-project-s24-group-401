@@ -27,6 +27,7 @@ export default class HangmanGameArea extends GameArea<HangmanGame> {
     command: CommandType,
     player: Player,
   ): InteractableCommandReturnType<CommandType> {
+    console.log("command received");
     switch (command.type) {
       case 'JoinGame': {
         let game = this._game;
@@ -40,6 +41,7 @@ export default class HangmanGameArea extends GameArea<HangmanGame> {
         return { gameID: game.id } as InteractableCommandReturnType<CommandType>;
       }
       case 'StartGame': {
+        console.log("starting in game area");
         const game = this._game;
         if (!game) {
           throw new InvalidParametersError(GAME_NOT_IN_PROGRESS_MESSAGE);
@@ -52,6 +54,7 @@ export default class HangmanGameArea extends GameArea<HangmanGame> {
         return undefined as InteractableCommandReturnType<CommandType>;
       }
       case 'GameMove': {
+        console.log("command!")
         if (this._game?.id !== command.gameID) {
           throw new InvalidParametersError(GAME_ID_MISSMATCH_MESSAGE);
         }
