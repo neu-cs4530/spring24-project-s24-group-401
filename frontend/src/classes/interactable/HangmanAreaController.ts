@@ -8,6 +8,7 @@ import {
   HangmanGameState,
   PlayerID,
 } from '../../types/CoveyTownSocket';
+import _ from 'lodash';
 
 export type HangmanCell = HangmanLetter | undefined;
 
@@ -102,7 +103,7 @@ export default class HangmanAreaController extends GameAreaController<
     turnIndex: 0,
   };
 
-  protected _board: HangmanCell[] = this._getBoard(this._gameState?.word);
+  protected _board: HangmanCell[] = this._createEmptyBoard();
 
   /**
    * This class is responsible for managing the state of the Hangman game, and for sending commands to the server
@@ -115,7 +116,6 @@ export default class HangmanAreaController extends GameAreaController<
   }
 
   private _createEmptyBoard(): HangmanCell[] {
-    this._gameState.word = generateWord();
     const board = new Array(this._gameState.word.length);
     for (let i = 0; i < this._gameState.word.length; i++) {
       board[i] = undefined;
@@ -178,8 +178,22 @@ export default class HangmanAreaController extends GameAreaController<
   protected _updateFrom(newModel: GameArea<HangmanGameState>): void {
     super._updateFrom(newModel);
     const newGame = newModel.game;
+    
     if (newGame) {
       this._gameState = newGame.state;
+      const newBoard = this._createEmptyBoard();
+      const word = newGame.state.word
+      newGame.state.guessedLetters.forEach((letter) => {
+        for (let i = 0; i < word.length; i++) {
+          if (word[i] === letter) {
+            newBoard[i] = letter as HangmanLetter;
+          }
+        }
+      });
+      if (!_.isEqual(newBoard, this._board)) {
+        this._board = newBoard;
+        this.emit('boardChanged', this._board);
+      }
       this.emit('wordChanged', this._gameState.word);
       this.emit('guessedLettersChanged', this._gameState.guessedLetters);
       this.emit('incorrectGuessesLeftChanged', this._gameState.incorrectGuessesLeft);

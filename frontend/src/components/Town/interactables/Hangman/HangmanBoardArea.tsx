@@ -66,7 +66,7 @@ export default function HangmanArea({
   useEffect(() => {
     console.log(gameStatus);
     const updateGameState = () => {
-      console.log('GAME UPDATED');
+      console.log('GAME UPDATED - useEffect in HangmanBoardArea.tsx');
       setPlayers(gameAreaController.playersByController);
       setGameStatus(gameAreaController.status || 'WAITING_TO_START');
       setWord(gameAreaController.word);

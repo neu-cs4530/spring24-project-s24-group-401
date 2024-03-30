@@ -170,9 +170,12 @@ export default function HangmanBoard({ gameAreaController }: HangmanGameProps): 
       await gameAreaController.makeMove(guessLetter);
       setGuess(''); // Clear the input field after submitting
     } catch (error) {
+      console.log(typeof(error))
+      console.log(error instanceof Error);
+      console.log("hi");
       toast({
         title: 'Error making move',
-        description: error instanceof Error ? error.toString() : 'An error occurred',
+        description: error || 'An error occurred',
         status: 'error',
       });
     }
