@@ -172,7 +172,7 @@ export default function HangmanBoard({ gameAreaController }: HangmanGameProps): 
     } catch (error) {
       toast({
         title: 'Error making move',
-        description: error instanceof Error ? error.toString() : 'An error occurred',
+        description: error || 'An error occurred',
         status: 'error',
       });
     }

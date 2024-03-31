@@ -66,7 +66,6 @@ export default function HangmanArea({
   useEffect(() => {
     console.log(gameStatus);
     const updateGameState = () => {
-      console.log('GAME UPDATED');
       setPlayers(gameAreaController.playersByController);
       setGameStatus(gameAreaController.status || 'WAITING_TO_START');
       setWord(gameAreaController.word);
@@ -97,7 +96,6 @@ export default function HangmanArea({
     };
   }, [townController, gameAreaController, toast]);
   let gameStatusText = <></>;
-  // NEED TO ADD TURN MANAGEMENT
   if (gameStatus === 'IN_PROGRESS') {
     gameStatusText = (
       <>

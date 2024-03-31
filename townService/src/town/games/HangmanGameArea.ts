@@ -17,8 +17,6 @@ import Player from '../../lib/Player';
 import HangmanGame from './HangmanGame';
 
 export default class HangmanGameArea extends GameArea<HangmanGame> {
-  // letters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
-
   protected getType(): InteractableType {
     return 'HangmanArea';
   }
@@ -32,7 +30,7 @@ export default class HangmanGameArea extends GameArea<HangmanGame> {
         let game = this._game;
         if (!game || game.state.status === 'OVER') {
           // No game in progress, make a new one
-          game = new HangmanGame('testword');
+          game = new HangmanGame('Test');
           this._game = game;
         }
         game.join(player);
