@@ -132,19 +132,19 @@ export default class HangmanGame extends Game<HangmanGameState, HangmanMove> {
 
     // if letter is in the word
     if (this._targetWord.toUpperCase().includes(guessedLetter)) {
-      console.log('letter is in word:' + this._targetWord);
+      console.log(`letter is in word:${this._targetWord}`);
       this._correctGuesses.delete(guessedLetter);
       if (this._correctGuesses.size === 0) {
         // player has guessed all the letters
         this.state = {
           ...this.state,
           status: 'OVER',
-        }
+        };
         this.state.winner = move.playerID;
       }
     } else {
       // if letter is not in the word
-      console.log('letter not in word HangmanGame.ts' + this._targetWord + ' ' + guessedLetter)
+      console.log(`letter not in word HangmanGame.ts${this._targetWord} ${guessedLetter}`);
       this.state.incorrectGuessesLeft -= 1;
       this.state.incorrectGuesses.push(guessedLetter);
       this._moveToNextPlayer();

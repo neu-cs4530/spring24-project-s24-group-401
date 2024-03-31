@@ -30,7 +30,7 @@ export default class HangmanGameArea extends GameArea<HangmanGame> {
         let game = this._game;
         if (!game || game.state.status === 'OVER') {
           // No game in progress, make a new one
-          game = new HangmanGame("Test");
+          game = new HangmanGame('Test');
           this._game = game;
         }
         game.join(player);

@@ -105,16 +105,6 @@ export default class HangmanAreaController extends GameAreaController<
 
   protected _board: HangmanCell[] = this._createEmptyBoard();
 
-  /**
-   * This class is responsible for managing the state of the Hangman game, and for sending commands to the server
-   */
-  private _getBoard(wordToBeGuessed: string): HangmanCell[] {
-    if (wordToBeGuessed === '') {
-      return this._createEmptyBoard();
-    }
-    return this._createEmptyBoard();
-  }
-
   private _createEmptyBoard(): HangmanCell[] {
     const board = new Array(this._gameState.word.length);
     for (let i = 0; i < this._gameState.word.length; i++) {
@@ -178,12 +168,12 @@ export default class HangmanAreaController extends GameAreaController<
   protected _updateFrom(newModel: GameArea<HangmanGameState>): void {
     super._updateFrom(newModel);
     const newGame = newModel.game;
-    
+
     if (newGame) {
       this._gameState = newGame.state;
       const newBoard = this._createEmptyBoard();
       const word = newGame.state.word.toUpperCase();
-      newGame.state.guessedLetters.forEach((letter) => {
+      newGame.state.guessedLetters.forEach(letter => {
         for (let i = 0; i < word.length; i++) {
           if (word[i] === letter) {
             newBoard[i] = letter as HangmanLetter;
