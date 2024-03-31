@@ -182,7 +182,7 @@ export default class HangmanAreaController extends GameAreaController<
     if (newGame) {
       this._gameState = newGame.state;
       const newBoard = this._createEmptyBoard();
-      const word = newGame.state.word
+      const word = newGame.state.word.toUpperCase();
       newGame.state.guessedLetters.forEach((letter) => {
         for (let i = 0; i < word.length; i++) {
           if (word[i] === letter) {

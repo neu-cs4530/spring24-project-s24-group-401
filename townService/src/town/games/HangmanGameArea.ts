@@ -17,8 +17,6 @@ import Player from '../../lib/Player';
 import HangmanGame from './HangmanGame';
 
 export default class HangmanGameArea extends GameArea<HangmanGame> {
-  // letters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
-
   protected getType(): InteractableType {
     return 'HangmanArea';
   }
