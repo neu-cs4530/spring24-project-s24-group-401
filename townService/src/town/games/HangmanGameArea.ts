@@ -92,15 +92,15 @@ export default class HangmanGameArea extends GameArea<HangmanGame> {
         player => player !== updatedState.state.winner,
       )!;
       // TODO: Handle multiple losers
-      const losingPlayer = this.occupants.find(player => player.id === losingPlayerID)!;
-      const winningPlayer = this.occupants.find(player => player.id === this.game?.state.winner)!;
-      this._history.push({
+      // const losingPlayer = this.occupants.find(player => player.id === losingPlayerID)!;
+      // const winningPlayer = this.occupants.find(player => player.id === this.game?.state.winner)!;
+      /* this._history.push({
         gameID,
         scores: {
           [winningPlayer.userName]: 1,
           [losingPlayer.userName]: 0,
         },
-      });
+      }); */
     }
   }
 }

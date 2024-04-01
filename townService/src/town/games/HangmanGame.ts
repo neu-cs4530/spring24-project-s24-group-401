@@ -39,7 +39,7 @@ export default class HangmanGame extends Game<HangmanGameState, HangmanMove> {
     });
     this._targetWord = targetWord;
     this._board = this._initBoard(targetWord);
-    this._correctGuesses = new Set([...targetWord]); // Unique letters in the word
+    this._correctGuesses = new Set([...targetWord.toUpperCase()]); // Unique letters in the word
   }
 
   /**
@@ -139,19 +139,23 @@ export default class HangmanGame extends Game<HangmanGameState, HangmanMove> {
         this.state = {
           ...this.state,
           status: 'OVER',
+          winner: move.playerID,
         };
-        this.state.winner = move.playerID;
       }
     } else {
       // if letter is not in the word
       console.log(`letter not in word HangmanGame.ts${this._targetWord} ${guessedLetter}`);
       this.state.incorrectGuessesLeft -= 1;
       this.state.incorrectGuesses.push(guessedLetter);
-      this._moveToNextPlayer();
       if (this.state.incorrectGuessesLeft === 0) {
         // player has run out of guesses
-        this.state.status = 'OVER';
-        this.state.winner = undefined;
+        this.state = {
+          ...this.state,
+          status: 'OVER',
+          winner: 'NO_WINNER',
+        };
+      } else {
+        this._moveToNextPlayer();
       }
     }
     this._board = this._renderBoard();

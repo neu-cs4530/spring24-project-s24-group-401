@@ -4,6 +4,7 @@ import { HangmanLetter } from '../../../../types/CoveyTownSocket';
 import HangmanAreaController, {
   HangmanCell,
 } from '../../../../classes/interactable/HangmanAreaController';
+import HangmanFigure from './HangmanFigure';
 
 const head = (
   <div
@@ -144,15 +145,20 @@ export type HangmanGameProps = {
 export default function HangmanBoard({ gameAreaController }: HangmanGameProps): JSX.Element {
   const [board, setBoard] = useState<HangmanCell[]>(gameAreaController.board);
   const [isOurTurn, setIsOurTurn] = useState(gameAreaController.isOurTurn);
+  const [incorrectGuessesLeft, setIncorrectGuessesLeft] = useState(
+    gameAreaController.incorrectGuessesLeft,
+  );
   const [guess, setGuess] = useState('');
   const toast = useToast();
   useEffect(() => {
     gameAreaController.addListener('turnChanged', setIsOurTurn);
     gameAreaController.addListener('boardChanged', setBoard);
+    gameAreaController.addListener('incorrectGuessesLeftChanged', setIncorrectGuessesLeft);
 
     return () => {
       gameAreaController.removeListener('boardChanged', setBoard);
       gameAreaController.removeListener('turnChanged', setIsOurTurn);
+      gameAreaController.removeListener('incorrectGuessesLeftChanged', setIncorrectGuessesLeft);
     };
   }, [gameAreaController]);
   const handleSubmit = async (event: React.FormEvent) => {
@@ -189,6 +195,8 @@ export default function HangmanBoard({ gameAreaController }: HangmanGameProps): 
           </StyledHangmanSquare>
         ))}
       </StyledHangmanBoard>
+      <HangmanFigure incorrectGuessesLeft={incorrectGuessesLeft} />{' '}
+      {/* Render HangmanFigure here */}
       <chakra.form onSubmit={handleSubmit} display='flex' justifyContent='center' mt='4'>
         <Input
           placeholder='Enter a letter'
