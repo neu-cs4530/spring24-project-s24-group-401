@@ -74,17 +74,17 @@ export default function HangmanArea({
     };
     const onGameEnd = () => {
       const winner = gameAreaController.winner;
-      if (!winner) {
+      if (winner !== undefined && winner !== 'NO_WINNER') {
+        toast({
+          title: 'Game over',
+          description: 'The winner is ' + winner + '!',
+          status: 'info',
+        });
+      } else if (winner === 'NO_WINNER') {
         toast({
           title: 'Game over',
           description: 'You lost :(',
           status: 'info',
-        });
-      } else {
-        toast({
-          title: 'Game over',
-          description: 'The winner is ' + winner + '!',
-          status: 'error',
         });
       }
     };

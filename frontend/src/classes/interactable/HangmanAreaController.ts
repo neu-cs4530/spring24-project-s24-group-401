@@ -184,6 +184,9 @@ export default class HangmanAreaController extends GameAreaController<
         this._board = newBoard;
         this.emit('boardChanged', this._board);
       }
+      if (this._gameState.status === 'OVER') {
+        this.emit('gameEnd');
+      }
       this.emit('wordChanged', this._gameState.word);
       this.emit('guessedLettersChanged', this._gameState.guessedLetters);
       this.emit('incorrectGuessesLeftChanged', this._gameState.incorrectGuessesLeft);
