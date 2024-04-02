@@ -1,4 +1,5 @@
 import { Sequelize } from 'sequelize';
+
 const sequelize = new Sequelize('template1', 'postgres', '', {
   host: 'localhost',
   port: 5432,
