@@ -64,26 +64,27 @@ export default function HangmanArea({
   );
   const toast = useToast();
   useEffect(() => {
+    console.log(gameStatus);
     const updateGameState = () => {
       setPlayers(gameAreaController.playersByController);
-      setGameStatus(gameAreaController.status);
+      setGameStatus(gameAreaController.status || 'WAITING_TO_START');
       setWord(gameAreaController.word);
       setGuessedLetters(gameAreaController.guessedLetters);
       setIncorrectGuessesLeft(gameAreaController.incorrectGuessesLeft);
     };
     const onGameEnd = () => {
       const winner = gameAreaController.winner;
-      if (!winner) {
+      if (winner !== undefined && winner !== 'NO_WINNER') {
+        toast({
+          title: 'Game over',
+          description: 'The winner is ' + winner + '!',
+          status: 'info',
+        });
+      } else if (winner === 'NO_WINNER') {
         toast({
           title: 'Game over',
           description: 'You lost :(',
           status: 'info',
-        });
-      } else {
-        toast({
-          title: 'Game over',
-          description: 'The winner is ' + winner + '!',
-          status: 'error',
         });
       }
     };
@@ -95,15 +96,12 @@ export default function HangmanArea({
     };
   }, [townController, gameAreaController, toast]);
   let gameStatusText = <></>;
-  // NEED TO ADD TURN MANAGEMENT
   if (gameStatus === 'IN_PROGRESS') {
     gameStatusText = (
       <>
         Game in progress, {incorrectGuessesLeft} incorrect guesses left, currently{' '}
-        {/* {gameAreaController.whoseTurn === townController.ourPlayer
-          ? 'your'
-          : gameAreaController.whoseTurn?.userName + "'s"}{' '} */}
-        your turn
+        {gameAreaController.isOurTurn ? 'your' : gameAreaController.whoseTurn + "'s"}
+        turn{' '}
       </>
     );
   } else if (gameStatus == 'WAITING_TO_START') {
@@ -162,9 +160,13 @@ export default function HangmanArea({
     <>
       {gameStatusText}
       <List aria-label='list of players in the game'>
-        {players.map((player: PlayerController) => {
+        {players.map((player: PlayerController, index) => {
           if (player) {
-            return <ListItem key={player.id}>{player.userName}</ListItem>;
+            return (
+              <ListItem key={player.id}>
+                Player{index + 1}: {player.userName}
+              </ListItem>
+            );
           }
         })}
       </List>
