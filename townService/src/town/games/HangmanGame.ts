@@ -30,7 +30,7 @@ export default class HangmanGame extends Game<HangmanGameState, HangmanMove> {
     // word to be guessed
     super({
       status: 'WAITING_FOR_PLAYERS',
-      word: 'testWord',
+      word: targetWord,
       guessedLetters: [],
       incorrectGuesses: [],
       incorrectGuessesLeft: 6,
@@ -39,7 +39,7 @@ export default class HangmanGame extends Game<HangmanGameState, HangmanMove> {
     });
     this._targetWord = targetWord;
     this._board = this._initBoard(targetWord);
-    this._correctGuesses = new Set([...targetWord]); // Unique letters in the word
+    this._correctGuesses = new Set([...targetWord.toUpperCase()]); // Unique letters in the word
   }
 
   /**
@@ -111,6 +111,7 @@ export default class HangmanGame extends Game<HangmanGameState, HangmanMove> {
    */
 
   public applyMove(move: GameMove<HangmanMove>) {
+    console.log('apply move in HangmanGame.ts');
     if (this.state.status !== 'IN_PROGRESS') {
       throw new InvalidParametersError(GAME_NOT_IN_PROGRESS_MESSAGE);
     }
@@ -130,22 +131,31 @@ export default class HangmanGame extends Game<HangmanGameState, HangmanMove> {
     this.state.guessedLetters.push(guessedLetter);
 
     // if letter is in the word
-    if (this._targetWord.includes(guessedLetter)) {
+    if (this._targetWord.toUpperCase().includes(guessedLetter)) {
+      console.log(`letter is in word:${this._targetWord}`);
       this._correctGuesses.delete(guessedLetter);
       if (this._correctGuesses.size === 0) {
         // player has guessed all the letters
-        this.state.status = 'OVER';
-        this.state.winner = move.playerID;
+        this.state = {
+          ...this.state,
+          status: 'OVER',
+          winner: move.playerID,
+        };
       }
     } else {
       // if letter is not in the word
+      console.log(`letter not in word HangmanGame.ts${this._targetWord} ${guessedLetter}`);
       this.state.incorrectGuessesLeft -= 1;
       this.state.incorrectGuesses.push(guessedLetter);
-      this._moveToNextPlayer();
       if (this.state.incorrectGuessesLeft === 0) {
         // player has run out of guesses
-        this.state.status = 'OVER';
-        this.state.winner = undefined;
+        this.state = {
+          ...this.state,
+          status: 'OVER',
+          winner: 'NO_WINNER',
+        };
+      } else {
+        this._moveToNextPlayer();
       }
     }
     this._board = this._renderBoard();

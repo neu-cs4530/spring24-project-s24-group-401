@@ -8,6 +8,7 @@ import {
   HangmanGameState,
   PlayerID,
 } from '../../types/CoveyTownSocket';
+import _ from 'lodash';
 
 export type HangmanCell = HangmanLetter | undefined;
 
@@ -80,7 +81,7 @@ export default class HangmanAreaController extends GameAreaController<
     ) {
       return undefined;
     }
-    return this._model.game.state.gamePlayersById[this._model.game.state.turnIndex];
+    return this._gameState.gamePlayersById[this._gameState.turnIndex];
   }
 
   /**
@@ -102,20 +103,9 @@ export default class HangmanAreaController extends GameAreaController<
     turnIndex: 0,
   };
 
-  protected _board: HangmanCell[] = this._getBoard(this._gameState?.word);
-
-  /**
-   * This class is responsible for managing the state of the Hangman game, and for sending commands to the server
-   */
-  private _getBoard(wordToBeGuessed: string): HangmanCell[] {
-    if (wordToBeGuessed === '') {
-      return this._createEmptyBoard();
-    }
-    return this._createEmptyBoard();
-  }
+  protected _board: HangmanCell[] = this._createEmptyBoard();
 
   private _createEmptyBoard(): HangmanCell[] {
-    this._gameState.word = generateWord();
     const board = new Array(this._gameState.word.length);
     for (let i = 0; i < this._gameState.word.length; i++) {
       board[i] = undefined;
@@ -178,14 +168,32 @@ export default class HangmanAreaController extends GameAreaController<
   protected _updateFrom(newModel: GameArea<HangmanGameState>): void {
     super._updateFrom(newModel);
     const newGame = newModel.game;
+
     if (newGame) {
       this._gameState = newGame.state;
+      const newBoard = this._createEmptyBoard();
+      const word = newGame.state.word.toUpperCase();
+      newGame.state.guessedLetters.forEach(letter => {
+        for (let i = 0; i < word.length; i++) {
+          if (word[i] === letter) {
+            newBoard[i] = letter as HangmanLetter;
+          }
+        }
+      });
+      if (!_.isEqual(newBoard, this._board)) {
+        this._board = newBoard;
+        this.emit('boardChanged', this._board);
+      }
+      if (this._gameState.status === 'OVER') {
+        this.emit('gameEnd');
+      }
       this.emit('wordChanged', this._gameState.word);
       this.emit('guessedLettersChanged', this._gameState.guessedLetters);
       this.emit('incorrectGuessesLeftChanged', this._gameState.incorrectGuessesLeft);
       this.emit('gamePlayersByIdChanged', this._gameState.gamePlayersById);
       this.emit('statusChanged', this._gameState.status);
       this.emit('winnerChanged', this._gameState.winner);
+      this.emit('turnChanged', this.isOurTurn);
     }
   }
 
