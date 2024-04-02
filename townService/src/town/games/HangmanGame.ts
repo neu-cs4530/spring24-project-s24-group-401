@@ -37,7 +37,7 @@ export default class HangmanGame extends Game<HangmanGameState, HangmanMove> {
       incorrectGuessesLeft: 6,
       gamePlayersById: [],
       turnIndex: 0,
-      databasePlayers: []
+      databasePlayers: [],
     });
     this._targetWord = targetWord;
     this._board = this._initBoard(targetWord);
@@ -143,7 +143,9 @@ export default class HangmanGame extends Game<HangmanGameState, HangmanMove> {
           status: 'OVER',
           winner: move.playerID,
         };
-        this.state.databasePlayers.find(player => player.name === move.playerID)?.increment('score');
+        this.state.databasePlayers
+          .find(player => player.name === move.playerID)
+          ?.increment('score');
       }
     } else {
       // if letter is not in the word
@@ -208,7 +210,7 @@ export default class HangmanGame extends Game<HangmanGameState, HangmanMove> {
     };
   }
 
-  private  _findOrCreateDatabasePlayer(playerID: string) {
+  private _findOrCreateDatabasePlayer(playerID: string) {
     DatabasePlayer.findOrCreate({
       where: {
         name: playerID,

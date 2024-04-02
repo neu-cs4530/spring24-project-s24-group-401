@@ -1,6 +1,10 @@
 import { DataTypes } from 'sequelize';
 import sequelize from './database';
 
+/**
+ * Defines a new Sequelize model named `Player`
+ * This model represents a player in the database
+ */
 const databasePlayer = sequelize.define('Player', {
   name: {
     type: DataTypes.STRING,
