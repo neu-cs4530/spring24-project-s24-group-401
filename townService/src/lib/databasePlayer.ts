@@ -13,12 +13,4 @@ const DatabasePlayer = sequelize.define('Player', {
   }
 });
 
-DatabasePlayer.sync({ force: true })
-  .then(() => {
-    console.log('Table created successfully');
-  })
-  .catch(err => {
-    console.error('Error creating table:', err);
-  });
-
 export default DatabasePlayer;
