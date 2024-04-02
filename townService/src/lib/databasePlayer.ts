@@ -1,7 +1,7 @@
 import { DataTypes } from 'sequelize';
 import sequelize from './database';
 
-const Player = sequelize.define('Player', {
+const DatabasePlayer = sequelize.define('Player', {
   name: {
     type: DataTypes.STRING,
     allowNull: false
@@ -13,4 +13,12 @@ const Player = sequelize.define('Player', {
   }
 });
 
-export default Player;
+DatabasePlayer.sync({ force: true })
+  .then(() => {
+    console.log('Table created successfully');
+  })
+  .catch(err => {
+    console.error('Error creating table:', err);
+  });
+
+export default DatabasePlayer;

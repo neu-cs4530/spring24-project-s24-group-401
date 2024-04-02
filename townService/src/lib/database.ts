@@ -1,9 +1,11 @@
 import { Sequelize } from 'sequelize';
 const sequelize = new Sequelize('template1', 'postgres', '', {
-  host: 'my.postgres-server.com',
+  host: 'localhost',
   port: 5432,
   dialect: 'postgres',
 });
+
+export default sequelize;
 
 // import { DataTypes } from 'sequelize';
 // import sequelize from '../database';
