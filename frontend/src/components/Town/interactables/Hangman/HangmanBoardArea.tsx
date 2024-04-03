@@ -106,7 +106,7 @@ export default function HangmanArea({
     gameStatusText = (
       <>
         Game in progress, {incorrectGuessesLeft} incorrect guesses left, currently{' '}
-        {gameAreaController.isOurTurn ? 'your' : gameAreaController.whoseTurn + "'s"}
+        {gameAreaController.isOurTurn ? 'your ' : gameAreaController.whoseTurn + "'s "}
         turn{' '}
       </>
     );
@@ -162,21 +162,33 @@ export default function HangmanArea({
       </b>
     );
   }
-  return (
-    <>
-      {gameStatusText}
-      <List aria-label='list of players in the game'>
-        {players.map((player: PlayerController, index) => {
-          if (player) {
-            return (
-              <ListItem key={player.id}>
-                Player{index + 1}: {player.userName}
-              </ListItem>
-            );
-          }
-        })}
-      </List>
-      <HangmanBoard gameAreaController={gameAreaController} />
-    </>
-  );
+  if (players.length === 0) {
+    return (
+      <>
+        {gameStatusText}
+        <List aria-label='list of players in the game' data-testid='listofplayers'>
+          <ListItem>No players in game yet!</ListItem>
+        </List>
+        <HangmanBoard gameAreaController={gameAreaController} />
+      </>
+    );
+  } else {
+    return (
+      <>
+        {gameStatusText}
+        <List aria-label='list of players in the game' data-testid='listofplayers'>
+          {players.map((player: PlayerController, index) => {
+            if (player) {
+              return (
+                <ListItem key={player.id}>
+                  Player{index + 1}: {player.userName}
+                </ListItem>
+              );
+            }
+          })}
+        </List>
+        <HangmanBoard gameAreaController={gameAreaController} />
+      </>
+    );
+  }
 }

@@ -81,6 +81,8 @@ class MockHangmanAreaController extends HangmanAreaController {
 
   mockGuessedLetters = [];
 
+  mockPlayersByController: PlayerController[] = [];
+
   public constructor() {
     super(nanoid(), mock<GameArea<HangmanGameState>>(), mock<TownController>());
     this.mockClear();
@@ -119,7 +121,7 @@ class MockHangmanAreaController extends HangmanAreaController {
   }
 
   get playersByController(): PlayerController[] {
-    return this.mockGamePlayersById.map(id => this._townController.getPlayer(id));
+    return this.mockPlayersByController;
   }
 
   get incorrectGuessesLeft(): number {
@@ -156,6 +158,7 @@ class MockHangmanAreaController extends HangmanAreaController {
     this.mockIncorrectGuessesLeft = 6;
     this.mockWord = 'testWord';
     this.mockGuessedLetters = [];
+    this.mockPlayersByController = [];
     this.makeMove.mockClear();
   }
 }
@@ -370,7 +373,6 @@ describe('HangmanArea', () => {
     describe('When clicked', () => {
       it('Calls the gameAreaController.joinGame method', () => {
         gameAreaController.mockStatus = 'WAITING_FOR_PLAYERS';
-        //gameAreaController.mockIsPlayer = false;
         renderHangmanArea();
         const button = screen.getByText('Join New Game');
         fireEvent.click(button);
@@ -378,7 +380,6 @@ describe('HangmanArea', () => {
       });
       it('Displays a toast with the error message if the joinGame method throws an error', async () => {
         gameAreaController.mockStatus = 'WAITING_FOR_PLAYERS';
-        //gameAreaController.mockIsPlayer = false;
         renderHangmanArea();
         const button = screen.getByText('Join New Game');
         fireEvent.click(button);
@@ -398,7 +399,6 @@ describe('HangmanArea', () => {
       });
       it('Is disabled and set to loading while the player is joining the game', async () => {
         gameAreaController.mockStatus = 'WAITING_FOR_PLAYERS';
-        //gameAreaController.mockIsPlayer = false;
         renderHangmanArea();
         const button = screen.getByText('Join New Game');
         fireEvent.click(button);
@@ -414,7 +414,6 @@ describe('HangmanArea', () => {
       });
       it('Adds the display of the button when a game becomes possible to join', () => {
         gameAreaController.mockStatus = 'WAITING_TO_START';
-        //gameAreaController.mockIsPlayer = false;
         gameAreaController.mockPlayer1 = new PlayerController(
           'player red',
           'player red',
@@ -436,7 +435,6 @@ describe('HangmanArea', () => {
       });
       it('Removes the button after the player has joined the game', () => {
         gameAreaController.mockStatus = 'WAITING_FOR_PLAYERS';
-        //gameAreaController.mockIsPlayer = false;
         gameAreaController.mockPlayer1 = undefined;
         gameAreaController.mockPlayer2 = new PlayerController(
           'player yellow',
@@ -463,26 +461,17 @@ describe('HangmanArea', () => {
         'player y',
         randomLocation(),
       );
-      //gameAreaController.mockIsPlayer = true;
       renderHangmanArea();
       expect(screen.queryByText('Start Game')).not.toBeInTheDocument();
     });
     it('Is not shown if the game status is WAITING_FOR_PLAYERS', () => {
       gameAreaController.mockStatus = 'WAITING_FOR_PLAYERS';
-      //gameAreaController.mockPlayer1 = ourPlayer;
-      //gameAreaController.mockIsPlayer = true;
       renderHangmanArea();
       expect(screen.queryByText('Start Game')).not.toBeInTheDocument();
     });
     it('Is shown if the game status is WAITING_TO_START', () => {
       gameAreaController.mockStatus = 'WAITING_TO_START';
       gameAreaController.mockPlayer1 = ourPlayer;
-      /* gameAreaController.mockPlayer2 = new PlayerController(
-        'player y',
-        'player y',
-        randomLocation(),
-      ); */
-      //gameAreaController.mockIsPlayer = true;
       renderHangmanArea();
       expect(screen.queryByText('Start Game')).toBeInTheDocument();
     });
@@ -490,12 +479,6 @@ describe('HangmanArea', () => {
       it('Calls the gameAreaController.startGame method', () => {
         gameAreaController.mockStatus = 'WAITING_TO_START';
         gameAreaController.mockPlayer1 = ourPlayer;
-        /* gameAreaController.mockYellow = new PlayerController(
-          'player y',
-          'player y',
-          randomLocation(),
-        ); */
-        //gameAreaController.mockIsPlayer = true;
         renderHangmanArea();
         const button = screen.getByText('Start Game');
         fireEvent.click(button);
@@ -504,12 +487,6 @@ describe('HangmanArea', () => {
       it('Displays a toast with the error message if the startGame method throws an error', async () => {
         gameAreaController.mockStatus = 'WAITING_TO_START';
         gameAreaController.mockPlayer1 = ourPlayer;
-        /* gameAreaController.mockPlayer2 = new PlayerController(
-          'player y',
-          'player y',
-          randomLocation(),
-        ); */
-        //gameAreaController.mockIsPlayer = true;
         renderHangmanArea();
         const button = screen.getByText('Start Game');
         fireEvent.click(button);
@@ -530,12 +507,6 @@ describe('HangmanArea', () => {
       it('Is disabled and set to loading while the player is starting the game', async () => {
         gameAreaController.mockStatus = 'WAITING_TO_START';
         gameAreaController.mockPlayer1 = ourPlayer;
-        /* gameAreaController.mockYellow = new PlayerController(
-          'player y',
-          'player y',
-          randomLocation(),
-        ); */
-        //gameAreaController.mockIsPlayer = true;
         renderHangmanArea();
         const button = screen.getByText('Start Game');
         fireEvent.click(button);
@@ -550,20 +521,6 @@ describe('HangmanArea', () => {
         expect(within(button).queryByText('Loading...')).not.toBeInTheDocument(); //Check that the loading text is not displayed
       });
       it('Adds the button when a game becomes possible to start', () => {
-        /* gameAreaController.mockStatus = 'WAITING_FOR_PLAYERS';
-        gameAreaController.mockRed = ourPlayer;
-        gameAreaController.mockIsPlayer = true;
-        renderConnectFourArea();
-        expect(screen.queryByText('Start Game')).not.toBeInTheDocument();
-        act(() => {
-          gameAreaController.mockStatus = 'WAITING_TO_START';
-          gameAreaController.mockYellow = new PlayerController(
-            'player y',
-            'player y',
-            randomLocation(),
-          );
-          gameAreaController.emit('gameUpdated');
-        }); */
         gameAreaController.mockStatus = 'WAITING_FOR_PLAYERS';
         renderHangmanArea();
         expect(screen.queryByText('Start Game')).not.toBeInTheDocument();
@@ -593,29 +550,33 @@ describe('HangmanArea', () => {
       });
     });
   });
-  /*  describe('[T3.4] Players in game text', () => {
+  describe('[T3.4] Players in game text', () => {
     it('Displays the username of player one if there is one', () => {
       gameAreaController.mockPlayer1 = new PlayerController(nanoid(), nanoid(), randomLocation());
       gameAreaController.mockStatus = 'WAITING_TO_START';
-      //gameAreaController.mockIsPlayer = false;
+      gameAreaController.mockPlayersByController = [gameAreaController.mockPlayer1];
       renderHangmanArea();
-      const listOfPlayers = screen.getByLabelText('list of players in the game');
+      screen.debug();
+      const listOfPlayers = screen.getByTestId('listofplayers');
       expect(
-        within(listOfPlayers).getByText(`${gameAreaController.mockPlayer1.userName}`),
+        within(listOfPlayers).getByText(`Player1: ${gameAreaController.mockPlayer1.userName}`),
       ).toBeInTheDocument();
     });
     it('Displays the username of player two if there is one', () => {
       gameAreaController.mockPlayer1 = new PlayerController(nanoid(), nanoid(), randomLocation());
       gameAreaController.mockStatus = 'WAITING_TO_START';
       gameAreaController.mockPlayer2 = new PlayerController(nanoid(), nanoid(), randomLocation());
-      //gameAreaController.mockIsPlayer = false;
+      gameAreaController.mockPlayersByController = [
+        gameAreaController.mockPlayer1,
+        gameAreaController.mockPlayer2,
+      ];
       renderHangmanArea();
-      const listOfPlayers = screen.getByLabelText('list of players in the game');
+      const listOfPlayers = screen.getByTestId('listofplayers');
       expect(
-        within(listOfPlayers).getByText(`${gameAreaController.mockPlayer1.userName}`),
+        within(listOfPlayers).getByText(`Player1: ${gameAreaController.mockPlayer1.userName}`),
       ).toBeInTheDocument();
       expect(
-        within(listOfPlayers).getByText(`${gameAreaController.mockPlayer2.userName}`),
+        within(listOfPlayers).getByText(`Player2: ${gameAreaController.mockPlayer2.userName}`),
       ).toBeInTheDocument();
     });
     it('Displays the username of player three if there is one', () => {
@@ -623,17 +584,21 @@ describe('HangmanArea', () => {
       gameAreaController.mockStatus = 'WAITING_TO_START';
       gameAreaController.mockPlayer2 = new PlayerController(nanoid(), nanoid(), randomLocation());
       gameAreaController.mockPlayer3 = new PlayerController(nanoid(), nanoid(), randomLocation());
-      //gameAreaController.mockIsPlayer = false;
+      gameAreaController.mockPlayersByController = [
+        gameAreaController.mockPlayer1,
+        gameAreaController.mockPlayer2,
+        gameAreaController.mockPlayer3,
+      ];
       renderHangmanArea();
-      const listOfPlayers = screen.getByLabelText('list of players in the game');
+      const listOfPlayers = screen.getByTestId('listofplayers');
       expect(
-        within(listOfPlayers).getByText(`${gameAreaController.mockPlayer1.userName}`),
+        within(listOfPlayers).getByText(`Player1: ${gameAreaController.mockPlayer1.userName}`),
       ).toBeInTheDocument();
       expect(
-        within(listOfPlayers).getByText(`${gameAreaController.mockPlayer2.userName}`),
+        within(listOfPlayers).getByText(`Player2: ${gameAreaController.mockPlayer2.userName}`),
       ).toBeInTheDocument();
       expect(
-        within(listOfPlayers).getByText(`${gameAreaController.mockPlayer3.userName}`),
+        within(listOfPlayers).getByText(`Player3: ${gameAreaController.mockPlayer3.userName}`),
       ).toBeInTheDocument();
     });
     it('Displays the username of player four if there is one', () => {
@@ -642,40 +607,48 @@ describe('HangmanArea', () => {
       gameAreaController.mockPlayer2 = new PlayerController(nanoid(), nanoid(), randomLocation());
       gameAreaController.mockPlayer3 = new PlayerController(nanoid(), nanoid(), randomLocation());
       gameAreaController.mockPlayer4 = new PlayerController(nanoid(), nanoid(), randomLocation());
+      gameAreaController.mockPlayersByController = [
+        gameAreaController.mockPlayer1,
+        gameAreaController.mockPlayer2,
+        gameAreaController.mockPlayer3,
+        gameAreaController.mockPlayer4,
+      ];
       renderHangmanArea();
-      const listOfPlayers = screen.getByLabelText('list of players in the game');
+      const listOfPlayers = screen.getByTestId('listofplayers');
       expect(
-        within(listOfPlayers).getByText(`${gameAreaController.mockPlayer1.userName}`),
+        within(listOfPlayers).getByText(`Player1: ${gameAreaController.mockPlayer1.userName}`),
       ).toBeInTheDocument();
       expect(
-        within(listOfPlayers).getByText(`${gameAreaController.mockPlayer2.userName}`),
+        within(listOfPlayers).getByText(`Player2: ${gameAreaController.mockPlayer2.userName}`),
       ).toBeInTheDocument();
       expect(
-        within(listOfPlayers).getByText(`${gameAreaController.mockPlayer3.userName}`),
+        within(listOfPlayers).getByText(`Player3: ${gameAreaController.mockPlayer3.userName}`),
       ).toBeInTheDocument();
       expect(
-        within(listOfPlayers).getByText(`${gameAreaController.mockPlayer4.userName}`),
+        within(listOfPlayers).getByText(`Player4: ${gameAreaController.mockPlayer4.userName}`),
       ).toBeInTheDocument();
     });
-     it('Displays "No players in game yet!" if there are no players', () => {
+    it('Displays "No players in game yet!" if there are no players', () => {
       gameAreaController.mockStatus = 'IN_PROGRESS';
       gameAreaController.mockPlayer1 = undefined;
       renderHangmanArea();
-      const listOfPlayers = screen.getByLabelText('list of players in the game');
+      const listOfPlayers = screen.getByTestId('listofplayers');
       expect(within(listOfPlayers).getByText(`No players in game yet!`)).toBeInTheDocument();
     });
     it('Updates player one when the game is updated', () => {
       gameAreaController.mockStatus = 'IN_PROGRESS';
       gameAreaController.mockPlayer1 = undefined;
       renderHangmanArea();
-      const listOfPlayers = screen.getByLabelText('list of players in the game');
-      //expect(within(listOfPlayers).getByText(`No players in game yet!)`)).toBeInTheDocument();
+      const listOfPlayers = screen.getByTestId('listofplayers');
+      expect(within(listOfPlayers).getByText(`No players in game yet!`)).toBeInTheDocument();
       gameAreaController.mockPlayer1 = new PlayerController(nanoid(), nanoid(), randomLocation());
+      gameAreaController.mockPlayersByController = [gameAreaController.mockPlayer1];
       act(() => {
         gameAreaController.emit('gameUpdated');
       });
+      screen.logTestingPlaygroundURL();
       expect(
-        within(listOfPlayers).getByText(`${gameAreaController.mockPlayer1.userName}`),
+        within(listOfPlayers).getByText(`Player1: ${gameAreaController.mockPlayer1.userName}`),
       ).toBeInTheDocument();
     });
     it('Updates both players when the game is updated', () => {
@@ -683,18 +656,23 @@ describe('HangmanArea', () => {
       gameAreaController.mockPlayer1 = undefined;
       gameAreaController.mockPlayer2 = undefined;
       renderHangmanArea();
-      const listOfPlayers = screen.getByLabelText('list of players in the game');
-      //expect(within(listOfPlayers).getByText(`No players in game yet!)`)).toBeInTheDocument();
+      const listOfPlayers = screen.getByTestId('listofplayers');
+      expect(within(listOfPlayers).getByText(`No players in game yet!`)).toBeInTheDocument();
       gameAreaController.mockPlayer1 = new PlayerController(nanoid(), nanoid(), randomLocation());
       gameAreaController.mockPlayer2 = new PlayerController(nanoid(), nanoid(), randomLocation());
+      gameAreaController.mockPlayersByController = [
+        gameAreaController.mockPlayer1,
+        gameAreaController.mockPlayer2,
+      ];
+
       act(() => {
         gameAreaController.emit('gameUpdated');
       });
       expect(
-        within(listOfPlayers).getByText(`${gameAreaController.mockPlayer1.userName}`),
+        within(listOfPlayers).getByText(`Player1: ${gameAreaController.mockPlayer1.userName}`),
       ).toBeInTheDocument();
       expect(
-        within(listOfPlayers).getByText(`${gameAreaController.mockPlayer2.userName}`),
+        within(listOfPlayers).getByText(`Player2: ${gameAreaController.mockPlayer2.userName}`),
       ).toBeInTheDocument();
     });
     it('Updates all three players when the game is updated', () => {
@@ -704,23 +682,28 @@ describe('HangmanArea', () => {
       gameAreaController.mockPlayer3 = undefined;
 
       renderHangmanArea();
-      const listOfPlayers = screen.getByLabelText('list of players in the game');
-      //expect(within(listOfPlayers).getByText(`No players in game yet!)`)).toBeInTheDocument();
+      const listOfPlayers = screen.getByTestId('listofplayers');
+      expect(within(listOfPlayers).getByText(`No players in game yet!`)).toBeInTheDocument();
       gameAreaController.mockPlayer1 = new PlayerController(nanoid(), nanoid(), randomLocation());
       gameAreaController.mockPlayer2 = new PlayerController(nanoid(), nanoid(), randomLocation());
       gameAreaController.mockPlayer3 = new PlayerController(nanoid(), nanoid(), randomLocation());
+      gameAreaController.mockPlayersByController = [
+        gameAreaController.mockPlayer1,
+        gameAreaController.mockPlayer2,
+        gameAreaController.mockPlayer3,
+      ];
 
       act(() => {
         gameAreaController.emit('gameUpdated');
       });
       expect(
-        within(listOfPlayers).getByText(`${gameAreaController.mockPlayer1.userName}`),
+        within(listOfPlayers).getByText(`Player1: ${gameAreaController.mockPlayer1.userName}`),
       ).toBeInTheDocument();
       expect(
-        within(listOfPlayers).getByText(`${gameAreaController.mockPlayer2.userName}`),
+        within(listOfPlayers).getByText(`Player2: ${gameAreaController.mockPlayer2.userName}`),
       ).toBeInTheDocument();
       expect(
-        within(listOfPlayers).getByText(`${gameAreaController.mockPlayer3.userName}`),
+        within(listOfPlayers).getByText(`Player3: ${gameAreaController.mockPlayer3.userName}`),
       ).toBeInTheDocument();
     });
     it('Updates all four players when the game is updated', () => {
@@ -731,30 +714,35 @@ describe('HangmanArea', () => {
       gameAreaController.mockPlayer4 = undefined;
 
       renderHangmanArea();
-      const listOfPlayers = screen.getByLabelText('list of players in the game');
-      //expect(within(listOfPlayers).getByText(`No players in game yet!)`)).toBeInTheDocument();
+      const listOfPlayers = screen.getByTestId('listofplayers');
+      expect(within(listOfPlayers).getByText(`No players in game yet!`)).toBeInTheDocument();
       gameAreaController.mockPlayer1 = new PlayerController(nanoid(), nanoid(), randomLocation());
       gameAreaController.mockPlayer2 = new PlayerController(nanoid(), nanoid(), randomLocation());
       gameAreaController.mockPlayer3 = new PlayerController(nanoid(), nanoid(), randomLocation());
       gameAreaController.mockPlayer4 = new PlayerController(nanoid(), nanoid(), randomLocation());
-
+      gameAreaController.mockPlayersByController = [
+        gameAreaController.mockPlayer1,
+        gameAreaController.mockPlayer2,
+        gameAreaController.mockPlayer3,
+        gameAreaController.mockPlayer4,
+      ];
       act(() => {
         gameAreaController.emit('gameUpdated');
       });
       expect(
-        within(listOfPlayers).getByText(`${gameAreaController.mockPlayer1.userName}`),
+        within(listOfPlayers).getByText(`Player1: ${gameAreaController.mockPlayer1.userName}`),
       ).toBeInTheDocument();
       expect(
-        within(listOfPlayers).getByText(`${gameAreaController.mockPlayer2.userName}`),
+        within(listOfPlayers).getByText(`Player2: ${gameAreaController.mockPlayer2.userName}`),
       ).toBeInTheDocument();
       expect(
-        within(listOfPlayers).getByText(`${gameAreaController.mockPlayer3.userName}`),
+        within(listOfPlayers).getByText(`Player3: ${gameAreaController.mockPlayer3.userName}`),
       ).toBeInTheDocument();
       expect(
-        within(listOfPlayers).getByText(`${gameAreaController.mockPlayer4.userName}`),
+        within(listOfPlayers).getByText(`Player4: ${gameAreaController.mockPlayer4.userName}`),
       ).toBeInTheDocument();
     });
-  }); */
+  });
   describe('[T3.5] Game status text', () => {
     it('Displays the correct text when the game is waiting to start', () => {
       gameAreaController.mockStatus = 'WAITING_TO_START';
@@ -791,7 +779,7 @@ describe('HangmanArea', () => {
         gameAreaController.mockIsOurTurn = true;
         gameAreaController.mockWhoseTurn = ourPlayer.id;
       });
-      /* it('Displays a message "Game in progress, {incorrectGuessesLeft} incorrect guesses left" and indicates whose turn it is when it is our turn', () => {
+      it('Displays a message "Game in progress, {incorrectGuessesLeft} incorrect guesses left" and indicates whose turn it is when it is our turn', () => {
         renderHangmanArea();
         expect(
           screen.getByText('Game in progress, 2 incorrect guesses left, currently your turn', {
@@ -810,7 +798,7 @@ describe('HangmanArea', () => {
             { exact: false },
           ),
         ).toBeInTheDocument();
-      }); */
+      });
       it('Updates the move count when the game is updated', () => {
         renderHangmanArea();
         expect(
@@ -826,7 +814,7 @@ describe('HangmanArea', () => {
           screen.getByText(`Game in progress, 1 incorrect guesses left`, { exact: false }),
         ).toBeInTheDocument();
       });
-      /* it('Updates the turn when the game is updated', () => {
+      it('Updates the turn when the game is updated', () => {
         renderHangmanArea();
         expect(screen.getByText(`, currently your turn`, { exact: false })).toBeInTheDocument();
         act(() => {
@@ -840,7 +828,7 @@ describe('HangmanArea', () => {
             exact: false,
           }),
         ).toBeInTheDocument();
-      }); */
+      });
       it('Updates the game status when the game is updated', () => {
         gameAreaController.mockStatus = 'WAITING_TO_START';
         renderHangmanArea();
