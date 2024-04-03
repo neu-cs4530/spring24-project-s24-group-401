@@ -57,8 +57,6 @@ export default function HangmanArea({
   );
   const [joiningGame, setJoiningGame] = useState(false);
   const [gameStatus, setGameStatus] = useState<GameStatus>(gameAreaController.status);
-  const [word, setWord] = useState<string>(gameAreaController.word);
-  const [guessedLetters, setGuessedLetters] = useState<string[]>(gameAreaController.guessedLetters);
   const [incorrectGuessesLeft, setIncorrectGuessesLeft] = useState<number>(
     gameAreaController.incorrectGuessesLeft,
   );
@@ -68,18 +66,24 @@ export default function HangmanArea({
     const updateGameState = () => {
       setPlayers(gameAreaController.playersByController);
       setGameStatus(gameAreaController.status || 'WAITING_TO_START');
-      setWord(gameAreaController.word);
-      setGuessedLetters(gameAreaController.guessedLetters);
       setIncorrectGuessesLeft(gameAreaController.incorrectGuessesLeft);
     };
     const onGameEnd = () => {
       const winner = gameAreaController.winner;
       if (winner !== undefined && winner !== 'NO_WINNER') {
-        toast({
-          title: 'Game over',
-          description: 'The winner is ' + winner + '!',
-          status: 'info',
-        });
+        if (winner === townController.ourPlayer.id) {
+          toast({
+            title: 'Game over',
+            description: 'Congrats, you won!',
+            status: 'info',
+          });
+        } else {
+          toast({
+            title: 'Game over',
+            description: 'You lost :(. The winner is ' + winner + '!',
+            status: 'info',
+          });
+        }
       } else if (winner === 'NO_WINNER') {
         toast({
           title: 'Game over',
@@ -90,11 +94,13 @@ export default function HangmanArea({
     };
     gameAreaController.addListener('gameUpdated', updateGameState);
     gameAreaController.addListener('gameEnd', onGameEnd);
+    gameAreaController.addListener('incorrectGuessesLeftChanged', setIncorrectGuessesLeft);
     return () => {
       gameAreaController.removeListener('gameUpdated', updateGameState);
       gameAreaController.removeListener('gameEnd', onGameEnd);
+      gameAreaController.removeListener('incorrectGuessesLeftChanged', setIncorrectGuessesLeft);
     };
-  }, [townController, gameAreaController, toast]);
+  }, [townController, gameAreaController, toast, gameStatus, incorrectGuessesLeft]);
   let gameStatusText = <></>;
   if (gameStatus === 'IN_PROGRESS') {
     gameStatusText = (
