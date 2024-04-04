@@ -1,4 +1,5 @@
 import { Button, List, ListItem, useToast } from '@chakra-ui/react';
+import { Slider, SliderTrack, SliderFilledTrack, SliderThumb, Box, Text } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
 import HangmanAreaController from '../../../../classes/interactable/HangmanAreaController';
 import PlayerController from '../../../../classes/PlayerController';
@@ -6,6 +7,8 @@ import { useInteractableAreaController } from '../../../../classes/TownControlle
 import useTownController from '../../../../hooks/useTownController';
 import { GameStatus, InteractableID } from '../../../../types/CoveyTownSocket';
 import HangmanBoard from './HangmanBoard';
+import TownController from './TownController';
+
 
 /**
  * The HangmanArea component renders the Hangman game area.
@@ -105,6 +108,29 @@ export default function HangmanArea({
       </>
     );
   } else if (gameStatus == 'WAITING_TO_START') {
+    const [wordLength, setWordLength] = useState(5);
+    const difficultySlider = (
+      <Box my={4}>
+        <Text mb={2}>Adjust Word Length:</Text>
+          <Slider
+            defaultValue={5}
+            value={wordLength}
+            onChange={(value: number) => setWordLength(value)}
+            min={3}
+            max={10}
+            step={1}>
+          <SliderTrack>
+            <SliderFilledTrack />
+          </SliderTrack>
+          <SliderThumb />
+        </Slider>
+      </Box>
+    );
+
+    {difficultySlider};
+
+    townController.emitNum(wordLength, interactableID)
+
     const startGameButton = (
       <Button
         onClick={async () => {
