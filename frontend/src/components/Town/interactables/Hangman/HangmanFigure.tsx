@@ -35,11 +35,11 @@ const Leg = ({ isVisible, isLeft }: { isVisible: boolean; isLeft: boolean }) => 
     width='20px'
     backgroundColor='black'
     position='absolute'
-    bottom='0'
+    bottom='42px'
     left={isLeft ? '10px' : 'auto'}
     right={isLeft ? 'auto' : '10px'}
-    transform={isLeft ? 'rotate(45deg)' : 'rotate(-45deg)'}
-    transformOrigin='top left'
+    transform={isLeft ? 'rotate(-45deg)' : 'rotate(45deg)'}
+    transformOrigin={isLeft ? 'top left' : 'top right'} // Adjusted this line
   />
 );
 
