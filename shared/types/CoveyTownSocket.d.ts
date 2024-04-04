@@ -128,6 +128,7 @@ export interface HangmanGameState extends WinnableGameState {
   incorrectGuessesLeft: number;
   gamePlayersById: Array<PlayerID>;
   turnIndex: number;
+  databasePlayers: Array<DatabasePlayer>;
 }
 
 export interface HangmanMove {
