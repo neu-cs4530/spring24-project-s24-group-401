@@ -96,6 +96,26 @@ export default function HangmanArea({
     };
   }, [townController, gameAreaController, toast]);
   let gameStatusText = <></>;
+  const joinGameButton = (
+    <Button
+      onClick={async () => {
+        setJoiningGame(true);
+        try {
+          await gameAreaController.joinGame();
+        } catch (err) {
+          toast({
+            title: 'Error joining game',
+            description: (err as Error).toString(),
+            status: 'error',
+          });
+        }
+        setJoiningGame(false);
+      }}
+      isLoading={joiningGame}
+      disabled={joiningGame}>
+      Join Game
+    </Button>
+  );
   if (gameStatus === 'IN_PROGRESS') {
     gameStatusText = (
       <>
@@ -125,28 +145,9 @@ export default function HangmanArea({
         Start Game
       </Button>
     );
-    gameStatusText = <b>Waiting for players to press start. {startGameButton}</b>;
+    gameStatusText = <b>Waiting for players to press start. {startGameButton} {joinGameButton}</b>;
   } else {
-    const joinGameButton = (
-      <Button
-        onClick={async () => {
-          setJoiningGame(true);
-          try {
-            await gameAreaController.joinGame();
-          } catch (err) {
-            toast({
-              title: 'Error joining game',
-              description: (err as Error).toString(),
-              status: 'error',
-            });
-          }
-          setJoiningGame(false);
-        }}
-        isLoading={joiningGame}
-        disabled={joiningGame}>
-        Join New Game
-      </Button>
-    );
+    
     let gameStatusStr;
     if (gameStatus === 'OVER') gameStatusStr = 'over';
     else if (gameStatus === 'WAITING_FOR_PLAYERS') gameStatusStr = 'waiting for players to join';
