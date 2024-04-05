@@ -4,7 +4,15 @@ import {
   PLAYER_ALREADY_IN_GAME_MESSAGE,
 } from '../../lib/InvalidParametersError';
 import HangmanGame from './HangmanGame';
+import databasePlayer from '../../lib/databasePlayer';
 
+
+// Mock the DatabasePlayer module
+jest.mock('../../lib/databasePlayer', () => {
+  return {
+    findOrCreate: jest.fn().mockImplementation(() => Promise.resolve([{ id: 'testPlayer' }])),
+  };
+});
 describe('HangmanGame', () => {
   let game: HangmanGame;
 
