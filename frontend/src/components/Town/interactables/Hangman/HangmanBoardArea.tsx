@@ -125,7 +125,11 @@ export default function HangmanArea({
         Start Game
       </Button>
     );
-    gameStatusText = <b>Waiting for players to press start. {startGameButton}</b>;
+    gameStatusText = (
+      <b>
+        Waiting for players to press start. {joinGameButton} {startGameButton}
+      </b>
+    );
   } else {
     const joinGameButton = (
       <Button
