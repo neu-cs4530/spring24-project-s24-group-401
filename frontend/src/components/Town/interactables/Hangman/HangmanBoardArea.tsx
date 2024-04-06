@@ -145,9 +145,12 @@ export default function HangmanArea({
         Start Game
       </Button>
     );
-    gameStatusText = <b>Waiting for players to press start. {joinGameButton} {startGameButton}</b>;
+    gameStatusText = (
+      <b>
+        Waiting for players to press start. {joinGameButton} {startGameButton}
+      </b>
+    );
   } else {
-    
     let gameStatusStr;
     if (gameStatus === 'OVER') gameStatusStr = 'over';
     else if (gameStatus === 'WAITING_FOR_PLAYERS') gameStatusStr = 'waiting for players to join';
