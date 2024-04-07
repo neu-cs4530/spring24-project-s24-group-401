@@ -1,99 +1,76 @@
-import { Button, chakra, Input, Container, useToast } from '@chakra-ui/react';
+import { Button, chakra, Input, Container, useToast, Box } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
 import { HangmanLetter } from '../../../../types/CoveyTownSocket';
 import HangmanAreaController, {
   HangmanCell,
 } from '../../../../classes/interactable/HangmanAreaController';
-import HangmanFigure from './HangmanFigure';
 
-const head = (
-  <div
-    style={{
-      width: '50px',
-      height: '50px',
-      borderRadius: '100%',
-      border: '10px solid black',
-      position: 'absolute',
-      top: '20px',
-      right: '200px',
-    }}
+export type HangmanFigureProps = {
+  incorrectGuessesLeft: number;
+};
+
+const BodyPart = ({ isVisible }: { isVisible: boolean }) => (
+  <Box
+    display={isVisible ? 'block' : 'none'}
+    height='20px'
+    width='2px'
+    backgroundColor='black'
+    margin='2px auto'
   />
 );
 
-const body = (
-  <div
-    style={{
-      width: '10px',
-      height: '50px',
-      background: 'black',
-      position: 'absolute',
-      top: '65px',
-      right: '220px',
-    }}
+const Arm = ({ isVisible, isLeft }: { isVisible: boolean; isLeft: boolean }) => (
+  <Box
+    display={isVisible ? 'block' : 'none'}
+    height='2px'
+    width='20px'
+    backgroundColor='black'
+    position='absolute'
+    top='20px'
+    left={isLeft ? '10px' : 'auto'}
+    right={isLeft ? 'auto' : '10px'}
   />
 );
 
-const rightArm = (
-  <div
-    style={{
-      width: '50px',
-      height: '10px',
-      background: 'black',
-      position: 'absolute',
-      top: '85px',
-      right: '168px',
-      rotate: '-30deg',
-      transformOrigin: 'left bottom',
-    }}
+const Leg = ({ isVisible, isLeft }: { isVisible: boolean; isLeft: boolean }) => (
+  <Box
+    display={isVisible ? 'block' : 'none'}
+    height='2px'
+    width='20px'
+    backgroundColor='black'
+    position='absolute'
+    bottom='42px'
+    left={isLeft ? '10px' : 'auto'}
+    right={isLeft ? 'auto' : '10px'}
+    transform={isLeft ? 'rotate(-45deg)' : 'rotate(45deg)'}
+    transformOrigin={isLeft ? 'top left' : 'top right'}
   />
 );
 
-const leftArm = (
-  <div
-    style={{
-      width: '50px',
-      height: '10px',
-      background: 'black',
-      position: 'absolute',
-      top: '85px',
-      right: '230px',
-      rotate: '30deg',
-      transformOrigin: 'right bottom',
-    }}
-  />
+const HangmanFigure = ({ incorrectGuessesLeft }: HangmanFigureProps) => (
+  <Container centerContent>
+    <Box position='relative' height='100px' width='50px'>
+      {/* Head */}
+      <Box
+        borderRadius='50%'
+        border='2px solid'
+        borderColor='black'
+        width='20px'
+        height='20px'
+        display={incorrectGuessesLeft <= 5 ? 'block' : 'none'}
+        margin='0 auto'
+      />
+      {/* Body */}
+      <BodyPart isVisible={incorrectGuessesLeft <= 4} />
+      {/* Arms */}
+      <Arm isVisible={incorrectGuessesLeft <= 3} isLeft={true} />
+      <Arm isVisible={incorrectGuessesLeft <= 2} isLeft={false} />
+      {/* Legs */}
+      <Leg isVisible={incorrectGuessesLeft <= 1} isLeft={true} />
+      <Leg isVisible={incorrectGuessesLeft <= 0} isLeft={false} />
+    </Box>
+  </Container>
 );
-
-const rightLeg = (
-  <div
-    style={{
-      width: '65px',
-      height: '10px',
-      background: 'black',
-      position: 'absolute',
-      top: '105px',
-      right: '160px',
-      rotate: '60deg',
-      transformOrigin: 'left bottom',
-    }}
-  />
-);
-
-const leftLeg = (
-  <div
-    style={{
-      width: '65px',
-      height: '10px',
-      background: 'black',
-      position: 'absolute',
-      top: '105px',
-      right: '223px',
-      rotate: '-60deg',
-      transformOrigin: 'right bottom',
-    }}
-  />
-);
-
-const BODY_PARTS = [head, body, rightArm, leftArm, rightLeg, leftLeg];
 
 const StyledHangmanBoard = chakra(Container, {
   baseStyle: {
