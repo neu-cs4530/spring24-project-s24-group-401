@@ -5,6 +5,10 @@ import {
 } from '../../lib/InvalidParametersError';
 import HangmanGame from './HangmanGame';
 
+jest.mock('../../lib/databasePlayer', () => ({
+  findOrCreate: jest.fn().mockImplementation(() => Promise.resolve([{ id: 'testPlayer' }])),
+}));
+
 describe('HangmanGame', () => {
   let game: HangmanGame;
 
