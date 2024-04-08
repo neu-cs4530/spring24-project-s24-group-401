@@ -41,7 +41,11 @@ export default class HangmanGame extends Game<HangmanGameState, HangmanMove> {
     });
     this._targetWord = targetWord;
     this._board = this._initBoard(targetWord);
-    this._correctGuesses = new Set([...targetWord.toUpperCase()]); // Unique letters in the word
+    if (targetWord) {
+      this._correctGuesses = new Set([...targetWord.toUpperCase()]); // Unique letters in the word
+    } else {
+      this._correctGuesses = new Set();
+    }
   }
 
   /**
@@ -220,6 +224,9 @@ export default class HangmanGame extends Game<HangmanGameState, HangmanMove> {
 
   private _initBoard(targetWord: string): string {
     let board = '';
+    if (!targetWord) {
+      return '';
+    }
     for (let i = 0; i < targetWord.length; i++) {
       board += '_';
     }
