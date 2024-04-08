@@ -41,7 +41,7 @@ export default class HangmanGame extends Game<HangmanGameState, HangmanMove> {
     });
     this._targetWord = targetWord;
     this._board = this._initBoard(targetWord);
-    this._correctGuesses = new Set([...targetWord.toUpperCase()]); // Unique letters in the word
+    this._correctGuesses = new Set([...targetWord?.toUpperCase()]); // Unique letters in the word
   }
 
   /**
@@ -202,7 +202,7 @@ export default class HangmanGame extends Game<HangmanGameState, HangmanMove> {
     }
     this.state.gamePlayersById.push(player.id);
 
-    this._findOrCreateDatabasePlayer(player.id);
+    // this._findOrCreateDatabasePlayer(player.id);
 
     this.state = {
       ...this.state,
@@ -220,6 +220,9 @@ export default class HangmanGame extends Game<HangmanGameState, HangmanMove> {
 
   private _initBoard(targetWord: string): string {
     let board = '';
+    if (!targetWord) {
+      return '';
+    }
     for (let i = 0; i < targetWord.length; i++) {
       board += '_';
     }
