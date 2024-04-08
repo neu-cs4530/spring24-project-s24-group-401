@@ -491,6 +491,10 @@ export default class TownController extends (EventEmitter as new () => TypedEmit
     this._socket.emit('chatMessage', message);
   }
 
+  public emitNum(sendNum: number, InteractID: string) {
+    this._socket.emit('sendNum', sendNum, InteractID);
+  }
+
   /**
    * Sends an InteractableArea command to the townService. Returns a promise that resolves
    * when the command is acknowledged by the server.

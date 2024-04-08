@@ -21,16 +21,19 @@ export default class HangmanGameArea extends GameArea<HangmanGame> {
     return 'HangmanArea';
   }
 
+  wordLengthFromArea = 5;
+
   public handleCommand<CommandType extends InteractableCommand>(
     command: CommandType,
     player: Player,
+    randomWord = this.generateWord(this.wordLengthFromArea),
   ): InteractableCommandReturnType<CommandType> {
     switch (command.type) {
       case 'JoinGame': {
         let game = this._game;
         if (!game || game.state.status === 'OVER') {
           // No game in progress, make a new one
-          game = new HangmanGame('Test');
+          game = new HangmanGame(randomWord);
           this._game = game;
         }
         game.join(player);
@@ -102,5 +105,39 @@ export default class HangmanGameArea extends GameArea<HangmanGame> {
         },
       }); */
     }
+  }
+
+  public generateWord(wordLength: number): string {
+    let filteredWords = [];
+
+    const words = [
+      'apple',
+      'banana',
+      'cherry',
+      'date',
+      'elderberry',
+      'pie',
+      'grape',
+      'honeydew',
+      'kiwi',
+      'lemon',
+      'mango',
+      'nectarine',
+      'orange',
+      'pear',
+      'quince',
+      'raspberry',
+      'strawberry',
+      'tangerine',
+      'watermelon',
+    ];
+
+    filteredWords = words.filter(word => word.length === wordLength);
+
+    return filteredWords[Math.floor(Math.random() * filteredWords.length)];
+  }
+
+  public getWordLengthFromBoardArea(input: number) {
+    this.wordLengthFromArea = input;
   }
 }
