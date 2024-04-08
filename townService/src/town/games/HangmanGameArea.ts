@@ -21,7 +21,7 @@ export default class HangmanGameArea extends GameArea<HangmanGame> {
     return 'HangmanArea';
   }
 
-  wordLengthFromArea = 5
+  wordLengthFromArea = 5;
 
   public handleCommand<CommandType extends InteractableCommand>(
     command: CommandType,
@@ -109,7 +109,7 @@ export default class HangmanGameArea extends GameArea<HangmanGame> {
 
   public generateWord(wordLength: number): string {
     let filteredWords = [];
-  
+
     const words = [
       'apple',
       'banana',
@@ -131,9 +131,9 @@ export default class HangmanGameArea extends GameArea<HangmanGame> {
       'tangerine',
       'watermelon',
     ];
-  
+
     filteredWords = words.filter(word => word.length === wordLength);
-  
+
     return filteredWords[Math.floor(Math.random() * filteredWords.length)];
   }
 
@@ -141,5 +141,3 @@ export default class HangmanGameArea extends GameArea<HangmanGame> {
     this.wordLengthFromArea = input;
   }
 }
-
-
