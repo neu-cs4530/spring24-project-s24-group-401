@@ -1,4 +1,3 @@
-import { Button, List, ListItem, useToast } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
 import HangmanAreaController from '../../../../classes/interactable/HangmanAreaController';
 import PlayerController from '../../../../classes/PlayerController';
@@ -6,6 +5,8 @@ import { useInteractableAreaController } from '../../../../classes/TownControlle
 import useTownController from '../../../../hooks/useTownController';
 import { GameStatus, InteractableID } from '../../../../types/CoveyTownSocket';
 import HangmanBoard from './HangmanBoard';
+import { Button, List, ListItem, SliderMark, useToast } from '@chakra-ui/react';
+import { Slider, SliderTrack, SliderFilledTrack, SliderThumb, Box, Text } from '@chakra-ui/react';
 
 /**
  * The HangmanArea component renders the Hangman game area.
@@ -56,6 +57,7 @@ export default function HangmanArea({
     gameAreaController.playersByController,
   );
   const [joiningGame, setJoiningGame] = useState(false);
+  const [wordLength, setWordLength] = useState(5);
   const [gameStatus, setGameStatus] = useState<GameStatus>(gameAreaController.status);
   const [incorrectGuessesLeft, setIncorrectGuessesLeft] = useState<number>(
     gameAreaController.incorrectGuessesLeft,
@@ -102,6 +104,26 @@ export default function HangmanArea({
     };
   }, [townController, gameAreaController, toast, gameStatus, incorrectGuessesLeft]);
   let gameStatusText = <></>;
+  const joinGameButton = (
+    <Button
+      onClick={async () => {
+        setJoiningGame(true);
+        try {
+          await gameAreaController.joinGame();
+        } catch (err) {
+          toast({
+            title: 'Error joining game',
+            description: (err as Error).toString(),
+            status: 'error',
+          });
+        }
+        setJoiningGame(false);
+      }}
+      isLoading={joiningGame}
+      disabled={joiningGame}>
+      Join Game
+    </Button>
+  );
   if (gameStatus === 'IN_PROGRESS') {
     gameStatusText = (
       <>
@@ -131,34 +153,47 @@ export default function HangmanArea({
         Start Game
       </Button>
     );
-    gameStatusText = <b>Waiting for players to press start. {startGameButton}</b>;
+    gameStatusText = (
+      <b>
+        Waiting for players to press start. {joinGameButton} {startGameButton}
+      </b>
+    );
   } else {
-    const joinGameButton = (
-      <Button
-        onClick={async () => {
-          setJoiningGame(true);
-          try {
-            await gameAreaController.joinGame();
-          } catch (err) {
-            toast({
-              title: 'Error joining game',
-              description: (err as Error).toString(),
-              status: 'error',
-            });
-          }
-          setJoiningGame(false);
-        }}
-        isLoading={joiningGame}
-        disabled={joiningGame}>
-        Join New Game
-      </Button>
+    townController.emitNum(wordLength, interactableID);
+    console.log('emitting word length');
+    const difficultySlider = (
+      <Box my={4}>
+        <Text mb={2}>Adjust Word Length:</Text>
+        <Slider
+          defaultValue={5}
+          value={wordLength}
+          onChange={(value: number) => setWordLength(value)}
+          min={3}
+          max={10}
+          step={1}>
+          <SliderTrack>
+            <SliderFilledTrack />
+          </SliderTrack>
+          <SliderThumb />
+          {[3, 4, 5, 6, 7, 8, 9, 10].map(mark => (
+            <SliderMark
+              key={mark}
+              value={mark}
+              mt='1' // margin top for the label
+              ml='-2.5' // margin left to align the label with the mark
+              fontSize='sm'>
+              {mark}
+            </SliderMark>
+          ))}
+        </Slider>
+      </Box>
     );
     let gameStatusStr;
     if (gameStatus === 'OVER') gameStatusStr = 'over';
     else if (gameStatus === 'WAITING_FOR_PLAYERS') gameStatusStr = 'waiting for players to join';
     gameStatusText = (
       <b>
-        Game {gameStatusStr}. {joinGameButton}
+        Game {gameStatusStr}. {joinGameButton} {difficultySlider}
       </b>
     );
   }
