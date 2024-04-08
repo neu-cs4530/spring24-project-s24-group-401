@@ -206,7 +206,7 @@ export default class HangmanGame extends Game<HangmanGameState, HangmanMove> {
     }
     this.state.gamePlayersById.push(player.id);
 
-    this._findOrCreateDatabasePlayer(player.id);
+    // this._findOrCreateDatabasePlayer(player.id);
 
     this.state = {
       ...this.state,
