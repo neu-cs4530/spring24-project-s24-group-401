@@ -153,28 +153,29 @@ export default function HangmanArea({
       </b>
     );
   } else {
-    townController.emitNum(wordLength, interactableID)
+    townController.emitNum(wordLength, interactableID);
     console.log('emitting word length');
     const difficultySlider = (
       <Box my={4}>
         <Text mb={2}>Adjust Word Length:</Text>
-          <Slider
-            defaultValue={5}
-            value={wordLength}
-            onChange={(value: number) => setWordLength(value)}
-            min={3}
-            max={10}
-            step={1}>
+        <Slider
+          defaultValue={5}
+          value={wordLength}
+          onChange={(value: number) => setWordLength(value)}
+          min={3}
+          max={10}
+          step={1}>
           <SliderTrack>
             <SliderFilledTrack />
           </SliderTrack>
           <SliderThumb />
-          {[3, 4, 5, 6, 7, 8, 9, 10].map((mark) => (
+          {[3, 4, 5, 6, 7, 8, 9, 10].map(mark => (
             <SliderMark
+              key={mark}
               value={mark}
-              mt="1" // margin top for the label
-              ml="-2.5" // margin left to align the label with the mark
-              fontSize="sm">
+              mt='1' // margin top for the label
+              ml='-2.5' // margin left to align the label with the mark
+              fontSize='sm'>
               {mark}
             </SliderMark>
           ))}
