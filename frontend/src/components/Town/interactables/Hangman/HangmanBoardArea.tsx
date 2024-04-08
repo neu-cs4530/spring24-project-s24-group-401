@@ -1,5 +1,3 @@
-import { Button, List, ListItem, SliderMark, useToast } from '@chakra-ui/react';
-import { Slider, SliderTrack, SliderFilledTrack, SliderThumb, Box, Text } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
 import HangmanAreaController from '../../../../classes/interactable/HangmanAreaController';
 import PlayerController from '../../../../classes/PlayerController';
@@ -7,6 +5,8 @@ import { useInteractableAreaController } from '../../../../classes/TownControlle
 import useTownController from '../../../../hooks/useTownController';
 import { GameStatus, InteractableID } from '../../../../types/CoveyTownSocket';
 import HangmanBoard from './HangmanBoard';
+import { Button, List, ListItem, SliderMark, useToast } from '@chakra-ui/react';
+import { Slider, SliderTrack, SliderFilledTrack, SliderThumb, Box, Text } from '@chakra-ui/react';
 
 /**
  * The HangmanArea component renders the Hangman game area.
@@ -147,10 +147,14 @@ export default function HangmanArea({
         Start Game
       </Button>
     );
-    gameStatusText = <b>Waiting for players to press start. {startGameButton}</b>;
+    gameStatusText = (
+      <b>
+        Waiting for players to press start. {joinGameButton} {startGameButton}
+      </b>
+    );
   } else {
     townController.emitNum(wordLength, interactableID)
-    console.log("emitting word length")
+    console.log('emitting word length');
     const difficultySlider = (
       <Box my={4}>
         <Text mb={2}>Adjust Word Length:</Text>
@@ -177,27 +181,6 @@ export default function HangmanArea({
         </Slider>
       </Box>
     );
-    const joinGameButton = (
-      <Button
-        onClick={async () => {
-          setJoiningGame(true);
-          try {
-            await gameAreaController.joinGame();
-          } catch (err) {
-            toast({
-              title: 'Error joining game',
-              description: (err as Error).toString(),
-              status: 'error',
-            });
-          }
-          setJoiningGame(false);
-        }}
-        isLoading={joiningGame}
-        disabled={joiningGame}>
-        Join New Game
-      </Button>
-    );
-  } else {
     let gameStatusStr;
     if (gameStatus === 'OVER') gameStatusStr = 'over';
     else if (gameStatus === 'WAITING_FOR_PLAYERS') gameStatusStr = 'waiting for players to join';
