@@ -9,7 +9,6 @@ import { GameStatus, InteractableID } from '../../../../types/CoveyTownSocket';
 import HangmanBoard from './HangmanBoard';
 import TownController from './TownController';
 
-
 /**
  * The HangmanArea component renders the Hangman game area.
  * It renders the current state of the area, optionally allowing the player to join the game.
