@@ -122,7 +122,7 @@ export default function HangmanArea({
     gameStatusText = (
       <>
         Game in progress, {incorrectGuessesLeft} incorrect guesses left, currently{' '}
-        {gameAreaController.isOurTurn ? 'your' : gameAreaController.whoseTurn + "'s"}
+        {gameAreaController.isOurTurn ? 'your' : gameAreaController.whoseTurn + "'s "}
         turn{' '}
       </>
     );

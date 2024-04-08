@@ -42,7 +42,7 @@ export default class HangmanGame extends Game<HangmanGameState, HangmanMove> {
     this._targetWord = targetWord;
     this._board = this._initBoard(targetWord);
     if (targetWord) {
-      this._correctGuesses = new Set([...targetWord?.toUpperCase()]); // Unique letters in the word
+      this._correctGuesses = new Set([...targetWord.toUpperCase()]); // Unique letters in the word
     } else {
       this._correctGuesses = new Set();
     }
