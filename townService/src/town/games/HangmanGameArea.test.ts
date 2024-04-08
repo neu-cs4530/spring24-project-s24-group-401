@@ -80,7 +80,6 @@ describe('HangmanGameArea', () => {
     });
   });
 
-  
   describe('[H1.4] LeaveGame command', () => {
     beforeEach(() => {
       gameArea.handleCommand({ type: 'JoinGame' }, player);
@@ -93,12 +92,12 @@ describe('HangmanGameArea', () => {
       expect(gameArea.game?.state.gamePlayersById.length).toBe(0);
       expect(gameArea.game?.state.turnIndex).toBe(0);
       expect(gameArea.game?.state.incorrectGuessesLeft).toBe(6);
-
     });
 
     it('should throw an error for invalid game ID', () => {
-      expect(() => gameArea.handleCommand({ type: 'LeaveGame', gameID: 'invalid' }, player))
-        .toThrowError(GAME_ID_MISSMATCH_MESSAGE);
+      expect(() =>
+        gameArea.handleCommand({ type: 'LeaveGame', gameID: 'invalid' }, player),
+      ).toThrowError(GAME_ID_MISSMATCH_MESSAGE);
     });
   });
 });
