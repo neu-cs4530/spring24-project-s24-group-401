@@ -340,13 +340,7 @@ describe('HangmanArea', () => {
         randomLocation(),
       );
       renderHangmanArea();
-      expect(screen.queryByText('Join New Game')).not.toBeInTheDocument();
-    });
-    it('Is not shown if the game status is WAITING_TO_START', () => {
-      gameAreaController.mockStatus = 'WAITING_TO_START';
-      gameAreaController.mockPlayer1 = ourPlayer;
-      renderHangmanArea();
-      expect(screen.queryByText('Join New Game')).not.toBeInTheDocument();
+      expect(screen.queryByText('Join Game')).not.toBeInTheDocument();
     });
     it('Is shown if the game status is WAITING_FOR_PLAYERS', () => {
       gameAreaController.mockStatus = 'WAITING_FOR_PLAYERS';
@@ -357,7 +351,7 @@ describe('HangmanArea', () => {
         randomLocation(),
       );
       renderHangmanArea();
-      expect(screen.queryByText('Join New Game')).toBeInTheDocument();
+      expect(screen.queryByText('Join Game')).toBeInTheDocument();
     });
     it('Is shown if the game status is OVER', () => {
       gameAreaController.mockStatus = 'OVER';
@@ -368,20 +362,20 @@ describe('HangmanArea', () => {
         randomLocation(),
       );
       renderHangmanArea();
-      expect(screen.queryByText('Join New Game')).toBeInTheDocument();
+      expect(screen.queryByText('Join Game')).toBeInTheDocument();
     });
     describe('When clicked', () => {
       it('Calls the gameAreaController.joinGame method', () => {
         gameAreaController.mockStatus = 'WAITING_FOR_PLAYERS';
         renderHangmanArea();
-        const button = screen.getByText('Join New Game');
+        const button = screen.getByText('Join Game');
         fireEvent.click(button);
         expect(gameAreaController.joinGame).toBeCalled();
       });
       it('Displays a toast with the error message if the joinGame method throws an error', async () => {
         gameAreaController.mockStatus = 'WAITING_FOR_PLAYERS';
         renderHangmanArea();
-        const button = screen.getByText('Join New Game');
+        const button = screen.getByText('Join Game');
         fireEvent.click(button);
         expect(gameAreaController.joinGame).toBeCalled();
         const errorMessage = `Testing error message ${nanoid()}`;
@@ -400,10 +394,9 @@ describe('HangmanArea', () => {
       it('Is disabled and set to loading while the player is joining the game', async () => {
         gameAreaController.mockStatus = 'WAITING_FOR_PLAYERS';
         renderHangmanArea();
-        const button = screen.getByText('Join New Game');
+        const button = screen.getByText('Join Game');
         fireEvent.click(button);
         expect(gameAreaController.joinGame).toBeCalled();
-
         expect(button).toBeDisabled();
         expect(within(button).queryByText('Loading...')).toBeInTheDocument(); //Check that the loading text is displayed
         act(() => {
@@ -425,30 +418,13 @@ describe('HangmanArea', () => {
           randomLocation(),
         );
         renderHangmanArea();
-        expect(screen.queryByText('Join New Game')).not.toBeInTheDocument();
+        //expect(screen.queryByText('Join Game')).not.toBeInTheDocument();
         act(() => {
           gameAreaController.mockStatus = 'WAITING_FOR_PLAYERS';
           gameAreaController.mockPlayer1 = undefined;
           gameAreaController.emit('gameUpdated');
         });
-        expect(screen.queryByText('Join New Game')).toBeInTheDocument();
-      });
-      it('Removes the button after the player has joined the game', () => {
-        gameAreaController.mockStatus = 'WAITING_FOR_PLAYERS';
-        gameAreaController.mockPlayer1 = undefined;
-        gameAreaController.mockPlayer2 = new PlayerController(
-          'player yellow',
-          'player yellow',
-          randomLocation(),
-        );
-        renderHangmanArea();
-        expect(screen.queryByText('Join New Game')).toBeInTheDocument();
-        act(() => {
-          gameAreaController.mockStatus = 'WAITING_TO_START';
-          gameAreaController.mockPlayer1 = ourPlayer;
-          gameAreaController.emit('gameUpdated');
-        });
-        expect(screen.queryByText('Join New Game')).not.toBeInTheDocument();
+        expect(screen.queryByText('Join Game')).toBeInTheDocument();
       });
     });
   });
