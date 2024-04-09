@@ -8,7 +8,7 @@ import InvalidParametersError, {
   PLAYER_NOT_IN_GAME_MESSAGE,
 } from '../../lib/InvalidParametersError';
 import Player from '../../lib/Player';
-// import DatabasePlayer from '../../lib/databasePlayer';
+import DatabasePlayer from '../../lib/databasePlayer';
 import { GameMove, HangmanGameState, HangmanMove } from '../../types/CoveyTownSocket';
 import Game from './Game';
 
@@ -147,9 +147,9 @@ export default class HangmanGame extends Game<HangmanGameState, HangmanMove> {
           status: 'OVER',
           winner: move.playerID,
         };
-        // this.state.databasePlayers
-        //   .find(player => player.name === move.playerID)
-        //   ?.increment('score');
+        this.state.databasePlayers
+          .find(player => player.name === move.playerID)
+          ?.increment('score');
       }
     } else {
       // if letter is not in the word
@@ -214,13 +214,13 @@ export default class HangmanGame extends Game<HangmanGameState, HangmanMove> {
     };
   }
 
-  // private _findOrCreateDatabasePlayer(playerID: string) {
-  //   DatabasePlayer.findOrCreate({
-  //     where: {
-  //       name: playerID,
-  //     },
-  //   }).then(([dbPlayer]) => this.state.databasePlayers.push(dbPlayer));
-  // }
+  private _findOrCreateDatabasePlayer(playerID: string) {
+    DatabasePlayer.findOrCreate({
+      where: {
+        name: playerID,
+      },
+    }).then(([dbPlayer]) => this.state.databasePlayers.push(dbPlayer));
+  }
 
   private _initBoard(targetWord: string): string {
     let board = '';
