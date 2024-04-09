@@ -59,8 +59,6 @@ export default function HangmanArea({
   const [joiningGame, setJoiningGame] = useState(false);
   const [wordLength, setWordLength] = useState(5);
   const [gameStatus, setGameStatus] = useState<GameStatus>(gameAreaController.status);
-  const [word, setWord] = useState<string>(gameAreaController.word);
-  const [guessedLetters, setGuessedLetters] = useState<string[]>(gameAreaController.guessedLetters);
   const [incorrectGuessesLeft, setIncorrectGuessesLeft] = useState<number>(
     gameAreaController.incorrectGuessesLeft,
   );
@@ -70,18 +68,24 @@ export default function HangmanArea({
     const updateGameState = () => {
       setPlayers(gameAreaController.playersByController);
       setGameStatus(gameAreaController.status || 'WAITING_TO_START');
-      setWord(gameAreaController.word);
-      setGuessedLetters(gameAreaController.guessedLetters);
       setIncorrectGuessesLeft(gameAreaController.incorrectGuessesLeft);
     };
     const onGameEnd = () => {
       const winner = gameAreaController.winner;
       if (winner !== undefined && winner !== 'NO_WINNER') {
-        toast({
-          title: 'Game over',
-          description: 'The winner is ' + winner + '!',
-          status: 'info',
-        });
+        if (winner === townController.ourPlayer.id) {
+          toast({
+            title: 'Game over',
+            description: 'Congrats, you won!',
+            status: 'info',
+          });
+        } else {
+          toast({
+            title: 'Game over',
+            description: 'You lost :(. The winner is ' + winner + '!',
+            status: 'info',
+          });
+        }
       } else if (winner === 'NO_WINNER') {
         toast({
           title: 'Game over',
@@ -92,11 +96,13 @@ export default function HangmanArea({
     };
     gameAreaController.addListener('gameUpdated', updateGameState);
     gameAreaController.addListener('gameEnd', onGameEnd);
+    gameAreaController.addListener('incorrectGuessesLeftChanged', setIncorrectGuessesLeft);
     return () => {
       gameAreaController.removeListener('gameUpdated', updateGameState);
       gameAreaController.removeListener('gameEnd', onGameEnd);
+      gameAreaController.removeListener('incorrectGuessesLeftChanged', setIncorrectGuessesLeft);
     };
-  }, [townController, gameAreaController, toast]);
+  }, [townController, gameAreaController, toast, gameStatus, incorrectGuessesLeft]);
   let gameStatusText = <></>;
   const joinGameButton = (
     <Button
@@ -122,7 +128,7 @@ export default function HangmanArea({
     gameStatusText = (
       <>
         Game in progress, {incorrectGuessesLeft} incorrect guesses left, currently{' '}
-        {gameAreaController.isOurTurn ? 'your' : gameAreaController.whoseTurn + "'s "}
+        {gameAreaController.isOurTurn ? 'your ' : gameAreaController.whoseTurn + "'s "}
         turn{' '}
       </>
     );
@@ -191,21 +197,33 @@ export default function HangmanArea({
       </b>
     );
   }
-  return (
-    <>
-      {gameStatusText}
-      <List aria-label='list of players in the game'>
-        {players.map((player: PlayerController, index) => {
-          if (player) {
-            return (
-              <ListItem key={player.id}>
-                Player{index + 1}: {player.userName}
-              </ListItem>
-            );
-          }
-        })}
-      </List>
-      <HangmanBoard gameAreaController={gameAreaController} />
-    </>
-  );
+  if (players.length === 0) {
+    return (
+      <>
+        {gameStatusText}
+        <List aria-label='list of players in the game' data-testid='listofplayers'>
+          <ListItem>No players in game yet!</ListItem>
+        </List>
+        <HangmanBoard gameAreaController={gameAreaController} />
+      </>
+    );
+  } else {
+    return (
+      <>
+        {gameStatusText}
+        <List aria-label='list of players in the game' data-testid='listofplayers'>
+          {players.map((player: PlayerController, index) => {
+            if (player) {
+              return (
+                <ListItem key={player.id}>
+                  Player{index + 1}: {player.userName}
+                </ListItem>
+              );
+            }
+          })}
+        </List>
+        <HangmanBoard gameAreaController={gameAreaController} />
+      </>
+    );
+  }
 }
