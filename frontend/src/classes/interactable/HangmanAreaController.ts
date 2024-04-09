@@ -101,7 +101,6 @@ export default class HangmanAreaController extends GameAreaController<
     status: 'WAITING_FOR_PLAYERS',
     winner: undefined,
     turnIndex: 0,
-    databasePlayers: [],
   };
 
   protected _board: HangmanCell[] = this._createEmptyBoard();

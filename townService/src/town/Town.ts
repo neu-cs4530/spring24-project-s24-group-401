@@ -23,7 +23,6 @@ import ConversationArea from './ConversationArea';
 import GameAreaFactory from './games/GameAreaFactory';
 import InteractableArea from './InteractableArea';
 import ViewingArea from './ViewingArea';
-import HangmanGameArea from './games/HangmanGameArea';
 
 /**
  * The Town class implements the logic for each town: managing the various events that
@@ -143,14 +142,6 @@ export default class Town {
       if (this._chatMessages.length > 200) {
         this._chatMessages.shift();
       }
-    });
-
-    socket.on('sendNum', (sendNum: number, InteractID: string) => {
-      const sliderNumber = this._interactables.find(
-        eachInteractable => eachInteractable.id === InteractID,
-      ) as HangmanGameArea;
-
-      sliderNumber.getWordLengthFromBoardArea(sendNum);
     });
 
     // Register an event listener for the client socket: if the client updates their
