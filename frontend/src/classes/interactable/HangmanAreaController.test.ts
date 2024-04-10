@@ -46,7 +46,7 @@ describe('HangmanAreaController', () => {
     hangmanAreaController = new HangmanAreaController(gameAreaId, gameArea, mockTownController);
     const instanceID = nanoid();
     mockTownController.sendInteractableCommand.mockImplementationOnce(async () => {
-        return { gameID: instanceID };
+      return { gameID: instanceID };
     });
     hangmanAreaController.joinGame();
     hangmanAreaController.updateGameState('TEST', ['T', 'E', 'S'], 3, 'WAITING_TO_START', [
