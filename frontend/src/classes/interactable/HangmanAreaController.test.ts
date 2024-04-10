@@ -5,6 +5,7 @@ import { GameArea, HangmanGameState } from '../../types/CoveyTownSocket';
 import PlayerController from '../PlayerController';
 import TownController from '../TownController';
 import HangmanAreaController from './HangmanAreaController';
+import state from '../../components/VideoCall/VideoFrontend/state';
 
 describe('HangmanAreaController', () => {
   const ourPlayer = new PlayerController(nanoid(), nanoid(), {
@@ -43,6 +44,7 @@ describe('HangmanAreaController', () => {
   let hangmanAreaController: HangmanAreaController;
 
   beforeEach(() => {
+    hangmanAreaController.updateGameState('TEST', ['T', 'E', 'S'], 3, 'WAITING_TO_START');
     hangmanAreaController = new HangmanAreaController(gameAreaId, gameArea, mockTownController);
   });
 
