@@ -1,4 +1,3 @@
-import { CommandList } from 'twilio/lib/rest/preview/wireless/command';
 import InvalidParametersError, {
   GAME_ID_MISSMATCH_MESSAGE,
   GAME_NOT_IN_PROGRESS_MESSAGE,
@@ -90,10 +89,6 @@ export default class HangmanGameArea extends GameArea<HangmanGame> {
 
   private _checkGameEnded(updatedState: GameInstance<HangmanGameState>) {
     if (updatedState.state.status === 'OVER' && this._game) {
-      const gameID = this._game.id;
-      const losingPlayerID = updatedState.state.gamePlayersById.find(
-        player => player !== updatedState.state.winner,
-      )!;
       // TODO: Handle multiple losers
       // const losingPlayer = this.occupants.find(player => player.id === losingPlayerID)!;
       // const winningPlayer = this.occupants.find(player => player.id === this.game?.state.winner)!;

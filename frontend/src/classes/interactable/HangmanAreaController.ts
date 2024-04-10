@@ -4,7 +4,6 @@ import {
   GameArea,
   GameStatus,
   HangmanLetter,
-  HangmanMove,
   HangmanGameState,
   PlayerID,
 } from '../../types/CoveyTownSocket';
@@ -21,31 +20,6 @@ export type HangmanEvents = GameEventTypes & {
   winnerChanged: (winner?: string) => void;
   turnChanged: (isOurTurn: boolean) => void;
 };
-
-function generateWord(): string {
-  const words = [
-    'apple',
-    'banana',
-    'cherry',
-    'date',
-    'elderberry',
-    'fig',
-    'grape',
-    'honeydew',
-    'kiwi',
-    'lemon',
-    'mango',
-    'nectarine',
-    'orange',
-    'pear',
-    'quince',
-    'raspberry',
-    'strawberry',
-    'tangerine',
-    'watermelon',
-  ];
-  return words[Math.floor(Math.random() * words.length)];
-}
 
 export default class HangmanAreaController extends GameAreaController<
   HangmanGameState,
@@ -112,6 +86,16 @@ export default class HangmanAreaController extends GameAreaController<
       board[i] = undefined;
     }
     return board;
+  }
+
+  /**
+   * Helps create a manual gamestate for test cases
+   */
+  public async updateGameState(word: string, guessedLetters: Array<string>, incorrectGuessesLeft: number, status: GameStatus): Promise<void> {
+    this._gameState.word = word;
+    this._gameState.incorrectGuessesLeft= incorrectGuessesLeft;
+    this._gameState.status = status;
+    this._gameState.guessedLetters = guessedLetters;
   }
 
   /**
