@@ -1,7 +1,7 @@
 import assert from 'assert';
 import { mock } from 'jest-mock-extended';
 import { nanoid } from 'nanoid';
-import { HangmanMove, GameArea, HangmanGameState } from '../../types/CoveyTownSocket';
+import { GameArea, HangmanGameState } from '../../types/CoveyTownSocket';
 import PlayerController from '../PlayerController';
 import TownController from '../TownController';
 import HangmanAreaController from './HangmanAreaController';
@@ -86,7 +86,7 @@ describe('HangmanAreaController', () => {
       'The player should be marked as the winner',
     );
   });
-  
+
   it('should handle a game loss correctly', async () => {
     hangmanAreaController.updateGameState(
       'TEST', 
@@ -94,9 +94,9 @@ describe('HangmanAreaController', () => {
       3, 
       'IN_PROGRESS',
     );
+    
     await hangmanAreaController.makeMove('X');
     assert.strictEqual(hangmanAreaController.status, 'OVER');
     assert.strictEqual(hangmanAreaController.winner, undefined, 'There should be no winner');
   });
-
 });
