@@ -44,6 +44,7 @@ describe('HangmanAreaController', () => {
 
   beforeEach(() => {
     hangmanAreaController = new HangmanAreaController(gameAreaId, gameArea, mockTownController);
+    hangmanAreaController.joinGame();
     hangmanAreaController.updateGameState('TEST', ['T', 'E', 'S'], 3, 'WAITING_TO_START', [
       ourPlayer.id,
     ]);
