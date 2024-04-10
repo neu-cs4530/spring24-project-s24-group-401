@@ -91,10 +91,6 @@ describe('HangmanAreaController', () => {
     hangmanAreaController.updateGameState('TEST', ['T', 'E', 'S'], 1, 'IN_PROGRESS');
     await hangmanAreaController.makeMove('X');
     assert.strictEqual(hangmanAreaController.status, 'OVER');
-    assert.strictEqual(
-      hangmanAreaController.winner,
-      undefined,
-      'There should be no winner',
-    );
+    assert.strictEqual(hangmanAreaController.winner, undefined, 'There should be no winner');
   });
 });
