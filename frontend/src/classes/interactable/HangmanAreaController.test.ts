@@ -20,23 +20,12 @@ describe('HangmanAreaController', () => {
 
   const mockTownController = mock<TownController>();
   const gameAreaId = nanoid();
-  const initialGameState: HangmanGameState = {
-    word: '',
-    guessedLetters: [],
-    incorrectGuesses: [],
-    incorrectGuessesLeft: 6,
-    gamePlayersById: [],
-    status: 'WAITING_FOR_PLAYERS',
-    winner: undefined,
-    turnIndex: 0,
-    databasePlayers: [],
-  };
   const gameArea: GameArea<HangmanGameState> = {
     id: gameAreaId,
     game: undefined,
     history: [],
     type: 'HangmanArea',
-    occupants: []
+    occupants: [],
   };
 
   Object.defineProperty(mockTownController, 'ourPlayer', {
@@ -58,7 +47,11 @@ describe('HangmanAreaController', () => {
   });
 
   it('initialises correctly with default values', () => {
-    assert.strictEqual(hangmanAreaController.isActive(), false, 'Game should not be active initially');
+    assert.strictEqual(
+      hangmanAreaController.isActive(), 
+      false, 
+      'Game should not be active initially',
+    );
   });
 
   it('should update the game state correctly when starting the game', async () => {
@@ -84,34 +77,21 @@ describe('HangmanAreaController', () => {
   });
 
   it('should handle a game win correctly', async () => {
-    hangmanAreaController.updateGameState('TEST',['T', 'E', 'S'],3,'IN_PROGRESS');
-  
+    hangmanAreaController.updateGameState('TEST', ['T', 'E', 'S'], 3, 'IN_PROGRESS');
     await hangmanAreaController.makeMove('T');
-  
     assert.strictEqual(hangmanAreaController.status, 'OVER');
-    assert.strictEqual(hangmanAreaController.winner, ourPlayer.id, 'The player should be marked as the winner');
+    assert.strictEqual(
+      hangmanAreaController.winner, 
+      ourPlayer.id, 
+      'The player should be marked as the winner',
+    );
   });
   
   it('should handle a game loss correctly', async () => {
-    hangmanAreaController.updateGameState('TEST',['T', 'E', 'S'],1,'IN_PROGRESS');
-
+    hangmanAreaController.updateGameState('TEST', ['T', 'E', 'S'], 1, 'IN_PROGRESS');
     await hangmanAreaController.makeMove('X');
-    
     assert.strictEqual(hangmanAreaController.status, 'OVER');
     assert.strictEqual(hangmanAreaController.winner, undefined, 'There should be no winner');
   });
   
-  function updateGameWithMove(controller: HangmanAreaController, _nextMove: HangmanMove): void {
-    const nextState = Object.assign({}, controller.toInteractableAreaModel());
-    const nextGame = Object.assign({}, nextState.game);
-    nextState.game = nextGame;
-    const newState = Object.assign({}, nextGame.state);
-    nextGame.state = newState;
-    controller.updateFrom(nextState, controller.occupants);
-  }
-
-  it('processes a player move correctly', () => {
-    const testMove: HangmanMove = { gamePiece: 'A' };
-    updateGameWithMove(hangmanAreaController, testMove);
-  });
 });
