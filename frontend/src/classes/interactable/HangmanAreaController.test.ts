@@ -36,7 +36,7 @@ describe('HangmanAreaController', () => {
     game: undefined,
     history: [],
     type: 'HangmanArea',
-    occupants: [],
+    occupants: []
   };
 
   Object.defineProperty(mockTownController, 'ourPlayer', {
@@ -81,17 +81,16 @@ describe('HangmanAreaController', () => {
   });
 
   it('should handle a game win correctly', async () => {
-    hangmanAreaController.updateGameState('TEST',['T', 'E', 'S'], 3,'IN_PROGRESS');
-
+    hangmanAreaController.updateGameState('TEST',['T', 'E', 'S'],3,'IN_PROGRESS');
+  
     await hangmanAreaController.makeMove('T');
-
+  
     assert.strictEqual(hangmanAreaController.status, 'OVER');
-    assert.strictEqual(hangmanAreaController.winner, ourPlayer.id, 
-      'The player should be marked as the winner');
+    assert.strictEqual(hangmanAreaController.winner, ourPlayer.id, 'The player should be marked as the winner');
   });
-
+  
   it('should handle a game loss correctly', async () => {
-    hangmanAreaController.updateGameState('TEST',['T', 'E', 'S'], 1,'IN_PROGRESS');
+    hangmanAreaController.updateGameState('TEST',['T', 'E', 'S'],1,'IN_PROGRESS');
 
     await hangmanAreaController.makeMove('X');
     
