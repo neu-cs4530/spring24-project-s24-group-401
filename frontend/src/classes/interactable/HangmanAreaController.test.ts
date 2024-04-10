@@ -43,17 +43,20 @@ describe('HangmanAreaController', () => {
 
   let hangmanAreaController: HangmanAreaController;
 
+  /*
   beforeEach(() => {
     hangmanAreaController = new HangmanAreaController(gameAreaId, gameArea, mockTownController);
-    mockTownController.sendInteractableCommand.mockImplementationOnce(async () => {
-      return { gameID: instanceID };
-    });
     hangmanAreaController.updateGameState('TEST', ['T', 'E', 'S'], 3, 'WAITING_TO_START', [
       ourPlayer.id,
     ]);
   });
+  **/
 
   it('initialises correctly with default values', () => {
+    hangmanAreaController = new HangmanAreaController(gameAreaId, gameArea, mockTownController);
+    hangmanAreaController.updateGameState('TEST', ['T', 'E', 'S'], 3, 'WAITING_TO_START', [
+      ourPlayer.id,
+    ]);
     assert.strictEqual(
       hangmanAreaController.isActive(),
       false,
@@ -62,12 +65,20 @@ describe('HangmanAreaController', () => {
   });
 
   it('should update the game state correctly when starting the game', async () => {
+    hangmanAreaController = new HangmanAreaController(gameAreaId, gameArea, mockTownController);
+    hangmanAreaController.updateGameState('TEST', ['T', 'E', 'S'], 3, 'WAITING_TO_START', [
+      ourPlayer.id,
+    ]);
     await hangmanAreaController.joinGame();
     await hangmanAreaController.startGame();
     assert.strictEqual(hangmanAreaController.status, 'IN_PROGRESS');
   });
 
   it('should correctly make a move and update the game state', async () => {
+    hangmanAreaController = new HangmanAreaController(gameAreaId, gameArea, mockTownController);
+    hangmanAreaController.updateGameState('TEST', ['T', 'E', 'S'], 3, 'WAITING_TO_START', [
+      ourPlayer.id,
+    ]);
     await hangmanAreaController.joinGame();
     await hangmanAreaController.startGame();
     const letter = 'A';
@@ -79,6 +90,10 @@ describe('HangmanAreaController', () => {
   });
 
   it('should not allow starting a game when it is already in progress', async () => {
+    hangmanAreaController = new HangmanAreaController(gameAreaId, gameArea, mockTownController);
+    hangmanAreaController.updateGameState('TEST', ['T', 'E', 'S'], 3, 'WAITING_TO_START', [
+      ourPlayer.id,
+    ]);
     await hangmanAreaController.joinGame();
     await hangmanAreaController.startGame();
     await assert.rejects(async () => {
@@ -87,6 +102,7 @@ describe('HangmanAreaController', () => {
   });
 
   it('should handle a game win correctly', async () => {
+    hangmanAreaController = new HangmanAreaController(gameAreaId, gameArea, mockTownController);
     await hangmanAreaController.joinGame();
     hangmanAreaController.updateGameState('TEST', ['T', 'E', 'S'], 3, 'IN_PROGRESS', [
       ourPlayer.id,
@@ -101,6 +117,7 @@ describe('HangmanAreaController', () => {
   });
 
   it('should handle a game loss correctly', async () => {
+    hangmanAreaController = new HangmanAreaController(gameAreaId, gameArea, mockTownController);
     await hangmanAreaController.joinGame();
     hangmanAreaController.updateGameState('TEST', ['T', 'E', 'S'], 1, 'IN_PROGRESS', [
       ourPlayer.id,
