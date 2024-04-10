@@ -1,9 +1,8 @@
 import { mock } from 'jest-mock-extended';
 import { nanoid } from 'nanoid';
-import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
-import PlayerController from '../../../../classes/PlayerController';
 import TownController from '../../../../classes/TownController';
 import {
   GameArea,
@@ -15,7 +14,6 @@ import HangmanAreaController, {
   HangmanCell,
 } from '../../../../classes/interactable/HangmanAreaController';
 import HangmanBoard from './HangmanBoard';
-import { useToast } from '@chakra-ui/react';
 
 const mockToast = jest.fn();
 jest.mock('@chakra-ui/react', () => {

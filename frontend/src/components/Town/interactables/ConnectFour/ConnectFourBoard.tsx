@@ -3,7 +3,7 @@ import ConnectFourAreaController, {
 } from '../../../../classes/interactable/ConnectFourAreaController';
 import { Button, chakra, Container, useToast } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
-import { ConnectFourColIndex, HangmanLetter } from '../../../../types/CoveyTownSocket';
+import { ConnectFourColIndex } from '../../../../types/CoveyTownSocket';
 
 export type ConnectFourGameProps = {
   gameAreaController: ConnectFourAreaController;

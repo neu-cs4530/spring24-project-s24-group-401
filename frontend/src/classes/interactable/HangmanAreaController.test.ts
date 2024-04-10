@@ -1,12 +1,10 @@
 import assert from 'assert';
 import { mock } from 'jest-mock-extended';
 import { nanoid } from 'nanoid';
-import { HangmanMove } from '../../types/CoveyTownSocket';
+import { GameArea, HangmanGameState } from '../../types/CoveyTownSocket';
 import PlayerController from '../PlayerController';
 import TownController from '../TownController';
 import HangmanAreaController from './HangmanAreaController';
-
-// Co-Pilot generated tests, will be edited as we build functionality
 
 describe('HangmanAreaController', () => {
   const ourPlayer = new PlayerController(nanoid(), nanoid(), {
@@ -21,6 +19,15 @@ describe('HangmanAreaController', () => {
   ];
 
   const mockTownController = mock<TownController>();
+  const gameAreaId = nanoid();
+  const gameArea: GameArea<HangmanGameState> = {
+    id: gameAreaId,
+    game: undefined,
+    history: [],
+    type: 'HangmanArea',
+    occupants: [],
+  };
+
   Object.defineProperty(mockTownController, 'ourPlayer', {
     get: () => ourPlayer,
   });
@@ -32,18 +39,90 @@ describe('HangmanAreaController', () => {
     assert(p);
     return p;
   });
-  // Add a simple test to ensure the test suite contains at least one test
-  it('should ensure basic arithmetic works', () => {
-    assert.strictEqual(1 + 1, 2, 'Expected 1 + 1 to equal 2');
+
+  let hangmanAreaController: HangmanAreaController;
+
+  /*
+  beforeEach(() => {
+    hangmanAreaController = new HangmanAreaController(gameAreaId, gameArea, mockTownController);
+    hangmanAreaController.updateGameState('TEST', ['T', 'E', 'S'], 3, 'WAITING_TO_START', [
+      ourPlayer.id,
+    ]);
+  });
+  **/
+
+  it('initialises correctly with default values', () => {
+    hangmanAreaController = new HangmanAreaController(gameAreaId, gameArea, mockTownController);
+    hangmanAreaController.updateGameState('TEST', ['T', 'E', 'S'], 3, 'WAITING_TO_START', [
+      ourPlayer.id,
+    ]);
+    assert.strictEqual(
+      hangmanAreaController.isActive(),
+      false,
+      'Game should not be active initially',
+    );
+  });
+  /*
+  it('should update the game state correctly when starting the game', async () => {
+    hangmanAreaController = new HangmanAreaController(gameAreaId, gameArea, mockTownController);
+    hangmanAreaController.updateGameState('TEST', ['T', 'E', 'S'], 3, 'WAITING_TO_START', [
+      ourPlayer.id,
+    ]);
+    await hangmanAreaController.joinGame();
+    await hangmanAreaController.startGame();
+    assert.strictEqual(hangmanAreaController.status, 'IN_PROGRESS');
   });
 
-  function updateGameWithMove(controller: HangmanAreaController, nextMove: HangmanMove): void {
-    const nextState = Object.assign({}, controller.toInteractableAreaModel());
-    const nextGame = Object.assign({}, nextState.game);
-    nextState.game = nextGame;
-    const newState = Object.assign({}, nextGame.state);
-    nextGame.state = newState;
-    // newState.moves = newState.moves.concat([nextMove]);
-    controller.updateFrom(nextState, controller.occupants);
-  }
+  it('should correctly make a move and update the game state', async () => {
+    hangmanAreaController = new HangmanAreaController(gameAreaId, gameArea, mockTownController);
+    hangmanAreaController.updateGameState('TEST', ['T', 'E', 'S'], 3, 'WAITING_TO_START', [
+      ourPlayer.id,
+    ]);
+    await hangmanAreaController.joinGame();
+    await hangmanAreaController.startGame();
+    const letter = 'A';
+    await hangmanAreaController.makeMove(letter);
+    assert(
+      hangmanAreaController.guessedLetters.includes(letter),
+      'Letter should be in guessed letters',
+    );
+  });
+
+  it('should not allow starting a game when it is already in progress', async () => {
+    hangmanAreaController = new HangmanAreaController(gameAreaId, gameArea, mockTownController);
+    hangmanAreaController.updateGameState('TEST', ['T', 'E', 'S'], 3, 'WAITING_TO_START', [
+      ourPlayer.id,
+    ]);
+    await hangmanAreaController.joinGame();
+    await hangmanAreaController.startGame();
+    await assert.rejects(async () => {
+      await hangmanAreaController.startGame();
+    }, 'Should not start a game already in progress');
+  });
+
+  it('should handle a game win correctly', async () => {
+    hangmanAreaController = new HangmanAreaController(gameAreaId, gameArea, mockTownController);
+    await hangmanAreaController.joinGame();
+    hangmanAreaController.updateGameState('TEST', ['T', 'E', 'S'], 3, 'IN_PROGRESS', [
+      ourPlayer.id,
+    ]);
+    await hangmanAreaController.makeMove('T');
+    assert.strictEqual(hangmanAreaController.status, 'OVER');
+    assert.strictEqual(
+      hangmanAreaController.winner,
+      ourPlayer.id,
+      'The player should be marked as the winner',
+    );
+  });
+
+  it('should handle a game loss correctly', async () => {
+    hangmanAreaController = new HangmanAreaController(gameAreaId, gameArea, mockTownController);
+    await hangmanAreaController.joinGame();
+    hangmanAreaController.updateGameState('TEST', ['T', 'E', 'S'], 1, 'IN_PROGRESS', [
+      ourPlayer.id,
+    ]);
+    await hangmanAreaController.makeMove('X');
+    assert.strictEqual(hangmanAreaController.status, 'OVER');
+    assert.strictEqual(hangmanAreaController.winner, undefined, 'There should be no winner');
+  }); */
 });
