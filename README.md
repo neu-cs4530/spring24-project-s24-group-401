@@ -14,10 +14,8 @@ A backend service (in the `townService` directory) implements the application lo
 
 ## Running this app locally - Final-Submission Release 
 If you are using the final-submission zip you can skip the Twilio configurations. First download the zip file under the final-submission release.
-Unzip the file and navigate to the townservice directory and run npm install in your terminal
-Navigate to the frontend directory and run npm install
-In both the townservice and frontend directory, run npm start in your terminal
-Visit http://localhost:3000/ in your browser
+Unzip the file and navigate to the townservice directory and run npm install in your terminal. Then navigate to the frontend directory and run npm install
+In both the townservice and frontend directory, run npm start in your terminal. Visit http://localhost:3000/ in your browser
 
 ## Running this app locally
 
