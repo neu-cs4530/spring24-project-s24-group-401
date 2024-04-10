@@ -129,6 +129,7 @@ export default class HangmanGameArea extends GameArea<HangmanGame> {
       'raspberry',
       'strawberry',
       'tangerine',
+      'apricot',
       'watermelon',
     ];
 

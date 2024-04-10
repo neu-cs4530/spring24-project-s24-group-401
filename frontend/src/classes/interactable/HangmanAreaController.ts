@@ -22,31 +22,6 @@ export type HangmanEvents = GameEventTypes & {
   turnChanged: (isOurTurn: boolean) => void;
 };
 
-function generateWord(): string {
-  const words = [
-    'apple',
-    'banana',
-    'cherry',
-    'date',
-    'elderberry',
-    'fig',
-    'grape',
-    'honeydew',
-    'kiwi',
-    'lemon',
-    'mango',
-    'nectarine',
-    'orange',
-    'pear',
-    'quince',
-    'raspberry',
-    'strawberry',
-    'tangerine',
-    'watermelon',
-  ];
-  return words[Math.floor(Math.random() * words.length)];
-}
-
 export default class HangmanAreaController extends GameAreaController<
   HangmanGameState,
   HangmanEvents
