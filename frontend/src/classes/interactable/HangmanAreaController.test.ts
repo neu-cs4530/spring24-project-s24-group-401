@@ -5,7 +5,6 @@ import { GameArea, HangmanGameState } from '../../types/CoveyTownSocket';
 import PlayerController from '../PlayerController';
 import TownController from '../TownController';
 import HangmanAreaController from './HangmanAreaController';
-import { mockTownController } from '../../TestUtils';
 
 describe('HangmanAreaController', () => {
   const ourPlayer = new PlayerController(nanoid(), nanoid(), {
@@ -29,7 +28,7 @@ describe('HangmanAreaController', () => {
     gamePlayersById: [],
     turnIndex: 0,
     databasePlayers: [],
-    status: 'WAITING_TO_START'
+    status: 'WAITING_TO_START',
   };
 
   const gameArea: GameArea<HangmanGameState> = {
@@ -38,11 +37,11 @@ describe('HangmanAreaController', () => {
     type: 'HangmanArea',
     occupants: [],
     game: {
-              id: nanoid(),
-              players: [],
-              state: initialGameState,
-            },
-      };
+      id: nanoid(),
+      players: [],
+      state: initialGameState,
+    },
+  };
 
   Object.defineProperty(mockTownController, 'ourPlayer', {
     get: () => ourPlayer,
@@ -58,14 +57,12 @@ describe('HangmanAreaController', () => {
 
   let hangmanAreaController: HangmanAreaController;
 
-  
   beforeEach(() => {
     hangmanAreaController = new HangmanAreaController(gameAreaId, gameArea, mockTownController);
     hangmanAreaController.updateGameState('TEST', ['T', 'E', 'S'], 3, 'WAITING_TO_START', [
       ourPlayer.id,
     ]);
   });
-  
 
   it('initialises correctly with default values', () => {
     hangmanAreaController = new HangmanAreaController(gameAreaId, gameArea, mockTownController);
@@ -78,7 +75,7 @@ describe('HangmanAreaController', () => {
       'Game should not be active initially',
     );
   });
-  /*
+
   it('should update the game state correctly when starting the game', async () => {
     hangmanAreaController = new HangmanAreaController(gameAreaId, gameArea, mockTownController);
     hangmanAreaController.updateGameState('TEST', ['T', 'E', 'S'], 3, 'WAITING_TO_START', [
@@ -118,7 +115,7 @@ describe('HangmanAreaController', () => {
 
   it('should handle a game win correctly', async () => {
     hangmanAreaController = new HangmanAreaController(gameAreaId, gameArea, mockTownController);
-    
+
     await hangmanAreaController.joinGame();
     hangmanAreaController.updateGameState('TEST', ['T', 'E', 'S'], 3, 'IN_PROGRESS', [
       ourPlayer.id,
