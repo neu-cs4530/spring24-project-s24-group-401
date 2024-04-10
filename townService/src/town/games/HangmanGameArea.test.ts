@@ -48,13 +48,13 @@ describe('HangmanGameArea', () => {
     });
 
     it('should start the game', () => {
-      if (gameArea.game != undefined) {
+      if (gameArea.game !== undefined) {
         gameArea.handleCommand({ type: 'StartGame', gameID: gameArea.game.id }, player);
         expect(gameArea.game?.state.status).toEqual('IN_PROGRESS');
       }
     });
     it('should start the game with multiple players', () => {
-      if (gameArea.game != undefined) {
+      if (gameArea.game !== undefined) {
         gameArea.handleCommand({ type: 'JoinGame' }, player2);
         game.join(player2);
         gameArea.handleCommand({ type: 'StartGame', gameID: gameArea.game.id }, player);
@@ -76,7 +76,7 @@ describe('HangmanGameArea', () => {
     });
 
     it('should apply a move', () => {
-      if (gameArea.game != undefined) {
+      if (gameArea.game !== undefined) {
         const move = { gamePiece: 'T' as HangmanLetter };
         gameArea.handleCommand({ type: 'StartGame', gameID: gameArea.game.id }, player);
         gameArea.handleCommand({ type: 'GameMove', move, gameID: gameArea.game.id }, player);
@@ -92,7 +92,7 @@ describe('HangmanGameArea', () => {
     });
 
     it('should process a leave game command', () => {
-      if (gameArea.game != undefined) {
+      if (gameArea.game !== undefined) {
         gameArea.handleCommand({ type: 'LeaveGame', gameID: gameArea.game.id }, player);
         expect(gameArea.game?.state.status).toBe('WAITING_FOR_PLAYERS');
         expect(gameArea.game?.state.gamePlayersById.length).toBe(0);
