@@ -44,7 +44,8 @@ describe('HangmanAreaController', () => {
 
   beforeEach(() => {
     hangmanAreaController = new HangmanAreaController(gameAreaId, gameArea, mockTownController);
-    hangmanAreaController.updateGameState('TEST', ['T', 'E', 'S'], 3, 'WAITING_TO_START');
+    
+    hangmanAreaController.updateGameState('TEST', ['T', 'E', 'S'], 3, 'WAITING_TO_START', [ourPlayer.id]);
   });
 
   it('initialises correctly with default values', () => {
@@ -78,7 +79,7 @@ describe('HangmanAreaController', () => {
   });
 
   it('should handle a game win correctly', async () => {
-    hangmanAreaController.updateGameState('TEST', ['T', 'E', 'S'], 3, 'IN_PROGRESS');
+    hangmanAreaController.updateGameState('TEST', ['T', 'E', 'S'], 3, 'IN_PROGRESS', [ourPlayer.id]);
     await hangmanAreaController.makeMove('T');
     assert.strictEqual(hangmanAreaController.status, 'OVER');
     assert.strictEqual(
@@ -89,7 +90,7 @@ describe('HangmanAreaController', () => {
   });
 
   it('should handle a game loss correctly', async () => {
-    hangmanAreaController.updateGameState('TEST', ['T', 'E', 'S'], 1, 'IN_PROGRESS');
+    hangmanAreaController.updateGameState('TEST', ['T', 'E', 'S'], 1, 'IN_PROGRESS', [ourPlayer.id]);
     await hangmanAreaController.makeMove('X');
     assert.strictEqual(hangmanAreaController.status, 'OVER');
     assert.strictEqual(hangmanAreaController.winner, undefined, 'There should be no winner');

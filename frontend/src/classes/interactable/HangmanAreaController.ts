@@ -96,11 +96,13 @@ export default class HangmanAreaController extends GameAreaController<
     guessedLetters: Array<string>,
     incorrectGuessesLeft: number,
     status: GameStatus,
+    databasePlayers: Array<PlayerID>
   ): Promise<void> {
     this._gameState.word = word;
     this._gameState.incorrectGuessesLeft = incorrectGuessesLeft;
     this._gameState.status = status;
     this._gameState.guessedLetters = guessedLetters;
+    this._gameState.databasePlayers = databasePlayers;
   }
 
   /**
