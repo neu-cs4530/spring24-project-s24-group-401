@@ -58,8 +58,7 @@ describe('HangmanAreaController', () => {
   });
 
   it('initialises correctly with default values', () => {
-    assert.strictEqual(hangmanAreaController.isActive(), false, 
-    'Game should not be active initially');
+    assert.strictEqual(hangmanAreaController.isActive(), false, 'Game should not be active initially');
   });
 
   it('should update the game state correctly when starting the game', async () => {
@@ -82,7 +81,7 @@ describe('HangmanAreaController', () => {
   });
 
   it('should handle a game win correctly', async () => {
-    hangmanAreaController.updateGameState('TEST', ['T', 'E', 'S'], 3,'IN_PROGRESS');
+    hangmanAreaController.updateGameState('TEST',['T', 'E', 'S'], 3,'IN_PROGRESS');
 
     await hangmanAreaController.makeMove('T');
 
@@ -92,13 +91,13 @@ describe('HangmanAreaController', () => {
   });
 
   it('should handle a game loss correctly', async () => {
-    hangmanAreaController.updateGameState('TEST', ['T', 'E', 'S'], 1,'IN_PROGRESS');
+    hangmanAreaController.updateGameState('TEST',['T', 'E', 'S'], 1,'IN_PROGRESS');
 
     await hangmanAreaController.makeMove('X');
-
+    
     assert.strictEqual(hangmanAreaController.status, 'OVER');
     assert.strictEqual(hangmanAreaController.winner, undefined, 'There should be no winner');
-});
+  });
   
   
 
