@@ -160,7 +160,7 @@ export default function HangmanArea({
     );
   } else {
     townController.emitNum(wordLength, interactableID);
-    console.log('emitting word length');
+    console.log('emitting word length' + wordLength);
     const difficultySlider = (
       <Box my={4}>
         <Text mb={2}>Adjust Word Length:</Text>
