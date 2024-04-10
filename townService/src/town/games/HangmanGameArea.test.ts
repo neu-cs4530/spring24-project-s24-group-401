@@ -74,7 +74,7 @@ describe('HangmanGameArea', () => {
     it('should apply a move', () => {
       const move = { gamePiece: 'T' as HangmanLetter };
       gameArea.handleCommand({ type: 'StartGame', gameID: gameArea.game!.id }, player);
-      gameArea.handleCommand({ type: 'GameMove', move, gameID: gameArea.game!?.id }, player);
+      gameArea.handleCommand({ type: 'GameMove', move, gameID: gameArea.game!.id }, player);
       expect(gameArea.game?.state.guessedLetters.includes('T')).toBeTruthy();
     });
   });
