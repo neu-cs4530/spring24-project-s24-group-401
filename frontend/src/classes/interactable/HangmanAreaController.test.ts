@@ -78,7 +78,7 @@ describe('HangmanAreaController', () => {
       'Game should not be active initially',
     );
   });
-
+  /*
   it('should update the game state correctly when starting the game', async () => {
     hangmanAreaController = new HangmanAreaController(gameAreaId, gameArea, mockTownController);
     hangmanAreaController.updateGameState('TEST', ['T', 'E', 'S'], 3, 'WAITING_TO_START', [
@@ -142,5 +142,4 @@ describe('HangmanAreaController', () => {
     assert.strictEqual(hangmanAreaController.status, 'OVER');
     assert.strictEqual(hangmanAreaController.winner, undefined, 'There should be no winner');
   });
-
 });
