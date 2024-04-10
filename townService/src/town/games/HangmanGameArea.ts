@@ -31,7 +31,7 @@ export default class HangmanGameArea extends GameArea<HangmanGame> {
     switch (command.type) {
       case 'JoinGame': {
         let game = this._game;
-        if (!game || game.state.status === 'OVER' || game.state.gamePlayersById.length == 0) {
+        if (!game || game.state.status === 'OVER' || game.state.gamePlayersById.length === 0) {
           // No game in progress, make a new one
           game = new HangmanGame(randomWord);
           this._game = game;
