@@ -40,14 +40,14 @@ describe('HangmanAreaController', () => {
     return p;
   });
   const instanceID = nanoid();
-  mockTownController.sendInteractableCommand.mockImplementationOnce(async () => {
-    return { gameID: instanceID };
-  });
 
   let hangmanAreaController: HangmanAreaController;
 
   beforeEach(() => {
     hangmanAreaController = new HangmanAreaController(gameAreaId, gameArea, mockTownController);
+    mockTownController.sendInteractableCommand.mockImplementationOnce(async () => {
+      return { gameID: instanceID };
+    });
     hangmanAreaController.joinGame();
     hangmanAreaController.updateGameState('TEST', ['T', 'E', 'S'], 3, 'WAITING_TO_START', [
       ourPlayer.id,
@@ -63,11 +63,13 @@ describe('HangmanAreaController', () => {
   });
 
   it('should update the game state correctly when starting the game', async () => {
+    hangmanAreaController.joinGame();
     await hangmanAreaController.startGame();
     assert.strictEqual(hangmanAreaController.status, 'IN_PROGRESS');
   });
 
   it('should correctly make a move and update the game state', async () => {
+    hangmanAreaController.joinGame();
     await hangmanAreaController.startGame();
     const letter = 'A';
     await hangmanAreaController.makeMove(letter);
@@ -78,6 +80,7 @@ describe('HangmanAreaController', () => {
   });
 
   it('should not allow starting a game when it is already in progress', async () => {
+    hangmanAreaController.joinGame();
     await hangmanAreaController.startGame();
     await assert.rejects(async () => {
       await hangmanAreaController.startGame();
@@ -85,6 +88,7 @@ describe('HangmanAreaController', () => {
   });
 
   it('should handle a game win correctly', async () => {
+    hangmanAreaController.joinGame();
     hangmanAreaController.updateGameState('TEST', ['T', 'E', 'S'], 3, 'IN_PROGRESS', [
       ourPlayer.id,
     ]);
@@ -98,6 +102,7 @@ describe('HangmanAreaController', () => {
   });
 
   it('should handle a game loss correctly', async () => {
+    hangmanAreaController.joinGame();
     hangmanAreaController.updateGameState('TEST', ['T', 'E', 'S'], 1, 'IN_PROGRESS', [
       ourPlayer.id,
     ]);
