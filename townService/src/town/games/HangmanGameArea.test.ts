@@ -48,13 +48,13 @@ describe('HangmanGameArea', () => {
     });
 
     it('should start the game', () => {
-      gameArea.handleCommand({ type: 'StartGame', gameID: gameArea.game!?.id }, player);
+      gameArea.handleCommand({ type: 'StartGame', gameID: gameArea.game!.id }, player);
       expect(gameArea.game?.state.status).toEqual('IN_PROGRESS');
     });
     it('should start the game with multiple players', () => {
       gameArea.handleCommand({ type: 'JoinGame' }, player2);
       game.join(player2);
-      gameArea.handleCommand({ type: 'StartGame', gameID: gameArea.game!?.id }, player);
+      gameArea.handleCommand({ type: 'StartGame', gameID: gameArea.game!.id }, player);
       expect(gameArea.game?.state.status).toEqual('IN_PROGRESS');
     });
 
@@ -73,8 +73,8 @@ describe('HangmanGameArea', () => {
 
     it('should apply a move', () => {
       const move = { gamePiece: 'T' as HangmanLetter };
-      gameArea.handleCommand({ type: 'StartGame', gameID: gameArea.game!?.id }, player);
-      gameArea.handleCommand({ type: 'GameMove', move, gameID: gameArea.game!?.id }, player);
+      gameArea.handleCommand({ type: 'StartGame', gameID: gameArea.game!.id }, player);
+      gameArea.handleCommand({ type: 'GameMove', move, gameID: gameArea.game!.id }, player);
       expect(gameArea.game?.state.guessedLetters.includes('T')).toBeTruthy();
     });
   });
@@ -86,7 +86,7 @@ describe('HangmanGameArea', () => {
     });
 
     it('should process a leave game command', () => {
-      gameArea.handleCommand({ type: 'LeaveGame', gameID: gameArea.game!?.id }, player);
+      gameArea.handleCommand({ type: 'LeaveGame', gameID: gameArea.game!.id }, player);
       expect(gameArea.game?.state.status).toBe('WAITING_FOR_PLAYERS');
       expect(gameArea.game?.state.gamePlayersById.length).toBe(0);
       expect(gameArea.game?.state.turnIndex).toBe(0);
