@@ -91,9 +91,14 @@ export default class HangmanAreaController extends GameAreaController<
   /**
    * Helps create a manual gamestate for test cases
    */
-  public async updateGameState(word: string, guessedLetters: Array<string>, incorrectGuessesLeft: number, status: GameStatus): Promise<void> {
+  public async updateGameState(
+    word: string,
+    guessedLetters: Array<string>,
+    incorrectGuessesLeft: number,
+    status: GameStatus,
+  ): Promise<void> {
     this._gameState.word = word;
-    this._gameState.incorrectGuessesLeft= incorrectGuessesLeft;
+    this._gameState.incorrectGuessesLeft = incorrectGuessesLeft;
     this._gameState.status = status;
     this._gameState.guessedLetters = guessedLetters;
   }
