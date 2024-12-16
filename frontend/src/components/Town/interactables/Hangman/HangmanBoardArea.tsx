@@ -138,6 +138,7 @@ export default function HangmanArea({
         onClick={async () => {
           setJoiningGame(true);
           try {
+            console.log("board area start game");
             await gameAreaController.startGame();
           } catch (err) {
             toast({

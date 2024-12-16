@@ -194,6 +194,7 @@ export default class HangmanAreaController extends GameAreaController<
     if (!instanceID || this._model.game?.state.status !== 'IN_PROGRESS') {
       throw new Error('No game in progress');
     }
+    console.log("making move");
     await this._townController.sendInteractableCommand(this.id, {
       type: 'GameMove',
       gameID: instanceID,
@@ -209,6 +210,7 @@ export default class HangmanAreaController extends GameAreaController<
    * @throws an error with message NO_GAME_STARTABLE if there is no game waiting to start
    */
   public async startGame(): Promise<void> {
+    console.log("starting game in controller");
     const instanceID = this._instanceID;
     if (!instanceID || this._model.game?.state.status !== 'WAITING_TO_START') {
       throw new Error(NO_GAME_STARTABLE);
